@@ -6,6 +6,6 @@ const ButtonBase: FC = () => {
 	return <button />
 }
 
-export const Button = styled(Button)`
+export const Button = styled(ButtonBase)`
 
 `;
