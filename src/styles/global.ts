@@ -9,6 +9,7 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0;
     outline: 0;
+    font-family: 'Sarala', sans-serif;
   }
 
   body {
@@ -18,4 +19,4 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
-`
+`;
