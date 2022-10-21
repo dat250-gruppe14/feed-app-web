@@ -3,7 +3,6 @@ import { colors } from './colors';
 
 export default createGlobalStyle`
   * {
-    background: ${colors.backgroundPrimary};
     box-sizing: border-box;
     color: white;
     margin: 0;
@@ -13,6 +12,7 @@ export default createGlobalStyle`
   }
 
   body {
+    background: ${colors.backgroundPrimary};
     -webkit-font-smoothing: antialiased;
   }
 

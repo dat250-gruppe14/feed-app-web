@@ -27,6 +27,8 @@
     "prettier/prettier": ["off", { "semi": true }, { "endOfLine": "auto" }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "warn",
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
     "no-underscore-dangle": "off",
     "react/jsx-one-expression-per-line": "off",
