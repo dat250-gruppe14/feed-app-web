@@ -35,7 +35,7 @@ export const Progress: FC<ProgressBarProps> = ({
   total,
   background
 }) => {
-  const percentageValue = calculatePercentage(value, total);
+  const percentageValue = Math.round(calculatePercentage(value, total));
 
   return (
     <ProgressBarWrapper>

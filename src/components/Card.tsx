@@ -1,10 +1,12 @@
 import { FC } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
 import { Progress } from './Progress';
+import { Button } from './Button';
 
 const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -43,10 +45,16 @@ const CardFooter = styled.div`
   margin-top: ${rem(20)};
 `;
 
-const Expiration = styled.div`
+const PollMeta = styled.div`
   background: rgba(0, 0, 0, 0.26);
   border-radius: ${rem(20)};
   padding: ${rem(4)} ${rem(14)};
+`;
+
+const VoteButton = styled(Button)`
+  align-self: flex-end;
+  background: ${colors.blueish};
+  justify-self: flex-end;
 `;
 
 interface CardProps {
@@ -56,6 +64,8 @@ interface CardProps {
   optionTwo: string;
   optionTwoCount: number;
   endDate?: Date;
+  owner?: string;
+  canVote?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -65,7 +75,10 @@ export const Card: FC<CardProps> = ({
   optionTwo,
   optionTwoCount,
   endDate,
+  owner,
+  canVote
 }) => {
+  const location = useLocation();
   const votesCount = optionOneCount + optionTwoCount;
   const daysLeft = getRemainingPollDays(endDate);
 
@@ -80,6 +93,7 @@ export const Card: FC<CardProps> = ({
             value={optionOneCount}
             total={votesCount}
           />
+          {canVote && <VoteButton />}
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
@@ -88,16 +102,22 @@ export const Card: FC<CardProps> = ({
             value={optionTwoCount}
             total={votesCount}
           />
+          {canVote && <VoteButton />}
         </OptionWrapper>
       </>
       <CardFooter>
         {daysLeft && (
-          <Expiration>{daysLeft === 1 
+          <PollMeta>{daysLeft === 1 
             ? `${daysLeft} day left`
             : `${daysLeft} days left`
-          }</Expiration>
+          }</PollMeta>
         )}
-        {/* ADD "GO TO POLL" button */}
+        {owner && (
+          <PollMeta>
+            {`Asked by ${owner}`}
+          </PollMeta>
+        )}
+        {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>
     </CardWrapper>
   );
