@@ -49,14 +49,16 @@ export const Header: FC = () => {
   const title = mapRouteToHeaderTitle(location.pathname);
 
   return (
-    <HeaderWrapper>
-      <TitleAndLogoWrapper>
-        <LogoWrapper>
-          <Logo />
-        </LogoWrapper>
-        <HeaderTitle title={title}>{title}</HeaderTitle>
-      </TitleAndLogoWrapper>
-      {title !== LOGIN_HEADER && <HeaderUserButton />}
-    </HeaderWrapper>
+    <>
+      <HeaderWrapper>
+        <TitleAndLogoWrapper>
+          <LogoWrapper>
+            <Logo />
+          </LogoWrapper>
+          <HeaderTitle title={title}>{title}</HeaderTitle>
+        </TitleAndLogoWrapper>
+        {title !== LOGIN_HEADER && <HeaderUserButton />}
+      </HeaderWrapper>
+    </>
   );
 };
