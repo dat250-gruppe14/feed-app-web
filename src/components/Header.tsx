@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import { useLocation } from 'react-router-dom';
 import { pathToRegexp } from 'path-to-regexp';
 
-import { colors } from 'src/styles/colors';
+  import { colors } from 'src/styles/colors';
 import { Logo } from './svg/Logo';
 import { HeaderUserButton } from './HeaderUserButton';
 
