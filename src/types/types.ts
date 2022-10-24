@@ -53,8 +53,3 @@ export interface DeviceVote {
   answerBCount: number;
   poll: Poll;
 }
-
-export interface PollOption {
-  description: string;
-  count?: number;
-}

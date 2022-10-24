@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { PollOption } from 'src/types/types';
+import { getRemainingPollDays } from 'src/utils/utils';
+import { Progress } from './Progress';
 
 const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -35,32 +36,69 @@ const OptionDescription = styled.p`
   font-weight: 700;
 `;
 
-const OptionValue = styled.div`
-  background-color: ${colors.backgroundTertiary};
+const CardFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: ${rem(20)};
+`;
+
+const Expiration = styled.div`
+  background: rgba(0, 0, 0, 0.26);
   border-radius: ${rem(20)};
-  margin-top: ${rem(4)};
+  padding: ${rem(4)} ${rem(14)};
 `;
 
 interface CardProps {
   title?: string;
-  options?: PollOption[];
+  optionOne: string;
+  optionOneCount: number;
+  optionTwo: string;
+  optionTwoCount: number;
   endDate?: Date;
 }
 
-export const Card: FC<CardProps> = ({ title, options, endDate }) => {
+export const Card: FC<CardProps> = ({
+  title,
+  optionOne,
+  optionOneCount,
+  optionTwo,
+  optionTwoCount,
+  endDate,
+}) => {
+  const votesCount = optionOneCount + optionTwoCount;
+  const daysLeft = getRemainingPollDays(endDate);
+
   return (
     <CardWrapper>
       {title && <CardTitle>{title}</CardTitle>}
-      {/* TODO: Implement progress bar to render option count ("progress") */}
-      {/* {options &&
-        options.map(option => {
-          return (
-            <OptionWrapper>
-              <OptionDescription>{option.description}</OptionDescription>
-              <OptionValue>{option.count}</OptionValue>
-            </OptionWrapper>
-          );
-        })} */}
+      <>
+        <OptionWrapper>
+          <OptionDescription>{optionOne}</OptionDescription>
+          <Progress
+            background={colors.green}
+            value={optionOneCount}
+            total={votesCount}
+          />
+        </OptionWrapper>
+        <OptionWrapper>
+          <OptionDescription>{optionTwo}</OptionDescription>
+          <Progress
+            background={colors.red}
+            value={optionTwoCount}
+            total={votesCount}
+          />
+        </OptionWrapper>
+      </>
+      <CardFooter>
+        {daysLeft && (
+          <Expiration>{daysLeft === 1 
+            ? `${daysLeft} day left`
+            : `${daysLeft} days left`
+          }</Expiration>
+        )}
+        {/* ADD "GO TO POLL" button */}
+      </CardFooter>
     </CardWrapper>
   );
 };
