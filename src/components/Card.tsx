@@ -1,9 +1,14 @@
 import { FC } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
-import { PollOption } from 'src/types/types';
+import { getRemainingPollDays } from 'src/utils/utils';
+import { Answer } from 'src/types/types';
+import { Progress } from './Progress';
+import { Button } from './Button';
 
 const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -35,32 +40,84 @@ const OptionDescription = styled.p`
   font-weight: 700;
 `;
 
-const OptionValue = styled.div`
-  background-color: ${colors.backgroundTertiary};
+const CardFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: ${rem(20)};
+`;
+
+const PollMeta = styled.div`
+  background: rgba(0, 0, 0, 0.26);
   border-radius: ${rem(20)};
-  margin-top: ${rem(4)};
+  padding: ${rem(4)} ${rem(14)};
+`;
+
+const VoteButton = styled(Button)`
+  align-self: flex-end;
+  background: ${colors.blueish};
+  justify-self: flex-end;
 `;
 
 interface CardProps {
   title?: string;
-  options?: PollOption[];
+  optionOne: string;
+  optionOneCount: number;
+  optionTwo: string;
+  optionTwoCount: number;
   endDate?: Date;
+  owner?: string;
+  userAnswer?: Answer;
 }
 
-export const Card: FC<CardProps> = ({ title, options, endDate }) => {
+export const Card: FC<CardProps> = ({
+  title,
+  optionOne,
+  optionOneCount,
+  optionTwo,
+  optionTwoCount,
+  endDate,
+  owner,
+  userAnswer,
+}) => {
+  const location = useLocation();
+  const votesCount = optionOneCount + optionTwoCount;
+  const daysLeft = getRemainingPollDays(endDate);
+  const isVotePage = location.pathname.match(pathToRegexp('/vote'));
+  const canVote = userAnswer !== undefined;
+
   return (
     <CardWrapper>
       {title && <CardTitle>{title}</CardTitle>}
-      {/* TODO: Implement progress bar to render option count ("progress") */}
-      {/* {options &&
-        options.map(option => {
-          return (
-            <OptionWrapper>
-              <OptionDescription>{option.description}</OptionDescription>
-              <OptionValue>{option.count}</OptionValue>
-            </OptionWrapper>
-          );
-        })} */}
+      <>
+        <OptionWrapper>
+          <OptionDescription>{optionOne}</OptionDescription>
+          <Progress
+            background={colors.green}
+            value={optionOneCount}
+            total={votesCount}
+          />
+          {canVote && <VoteButton />}
+        </OptionWrapper>
+        <OptionWrapper>
+          <OptionDescription>{optionTwo}</OptionDescription>
+          <Progress
+            background={colors.red}
+            value={optionTwoCount}
+            total={votesCount}
+          />
+          {canVote && <VoteButton />}
+        </OptionWrapper>
+      </>
+      <CardFooter>
+        {daysLeft && (
+          <PollMeta>
+            {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
+          </PollMeta>
+        )}
+        {owner && isVotePage && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+        {/* ADD "GO TO POLL" / "EDIT POLL" button */}
+      </CardFooter>
     </CardWrapper>
   );
 };

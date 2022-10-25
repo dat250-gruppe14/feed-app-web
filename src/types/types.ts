@@ -38,7 +38,7 @@ export interface Poll {
   endDate: Date;
   access: PollAccess;
   isClosed: boolean;
-  userAnswer: Answer;
+  userAnswer?: Answer;
 }
 
 export interface Vote {
