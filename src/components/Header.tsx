@@ -2,13 +2,11 @@ import { FC } from 'react';
 import styled, { css } from 'styled-components';
 import { rem } from 'polished';
 import { useLocation } from 'react-router-dom';
-import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
+import { LOGIN_HEADER, mapRouteToHeaderTitle } from 'src/utils/utils';
 import { Logo } from './svg/Logo';
 import { HeaderUserButton } from './HeaderUserButton';
-
-const LOGIN_HEADER = 'FEEDAPP';
 
 const HeaderWrapper = styled.div`
   margin: ${rem(40)} 0 ${rem(20)} 0;
@@ -48,31 +46,19 @@ const TitleAndLogoWrapper = styled.div`
 
 export const Header: FC = () => {
   const location = useLocation();
-
-  // TODO: Move to utils
-  // TODO: Change routes to constants
-  const mapRouteToTitle = (path: string) => {
-    if (path.match(pathToRegexp('/'))) return 'Polls';
-    if (path.match(pathToRegexp('/poll/create'))) return 'New poll';
-    if (path.match(pathToRegexp('/poll/edit'))) return 'Edit poll';
-    if (path.match(pathToRegexp('/poll/:id'))) return 'Vote';
-    if (path.match(pathToRegexp('/profile'))) return 'Profile';
-    if (path.match(pathToRegexp('/login'))) return LOGIN_HEADER;
-    if (path.match(pathToRegexp('/register'))) return LOGIN_HEADER;
-    return '';
-  };
-
-  const title = mapRouteToTitle(location.pathname);
+  const title = mapRouteToHeaderTitle(location.pathname);
 
   return (
-    <HeaderWrapper>
-      <TitleAndLogoWrapper>
-        <LogoWrapper>
-          <Logo />
-        </LogoWrapper>
-        <HeaderTitle title={title}>{title}</HeaderTitle>
-      </TitleAndLogoWrapper>
-      {title !== LOGIN_HEADER && <HeaderUserButton />}
-    </HeaderWrapper>
+    <>
+      <HeaderWrapper>
+        <TitleAndLogoWrapper>
+          <LogoWrapper>
+            <Logo />
+          </LogoWrapper>
+          <HeaderTitle title={title}>{title}</HeaderTitle>
+        </TitleAndLogoWrapper>
+        {title !== LOGIN_HEADER && <HeaderUserButton />}
+      </HeaderWrapper>
+    </>
   );
 };
