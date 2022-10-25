@@ -2,9 +2,11 @@ import { FC } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
+import { Answer } from 'src/types/types';
 import { Progress } from './Progress';
 import { Button } from './Button';
 
@@ -65,7 +67,7 @@ interface CardProps {
   optionTwoCount: number;
   endDate?: Date;
   owner?: string;
-  canVote?: boolean;
+  userAnswer?: Answer;
 }
 
 export const Card: FC<CardProps> = ({
@@ -76,11 +78,13 @@ export const Card: FC<CardProps> = ({
   optionTwoCount,
   endDate,
   owner,
-  canVote
+  userAnswer,
 }) => {
   const location = useLocation();
   const votesCount = optionOneCount + optionTwoCount;
   const daysLeft = getRemainingPollDays(endDate);
+  const isVotePage = location.pathname.match(pathToRegexp('/vote'));
+  const canVote = userAnswer !== undefined;
 
   return (
     <CardWrapper>
@@ -107,16 +111,11 @@ export const Card: FC<CardProps> = ({
       </>
       <CardFooter>
         {daysLeft && (
-          <PollMeta>{daysLeft === 1 
-            ? `${daysLeft} day left`
-            : `${daysLeft} days left`
-          }</PollMeta>
-        )}
-        {owner && (
           <PollMeta>
-            {`Asked by ${owner}`}
+            {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
           </PollMeta>
         )}
+        {owner && isVotePage && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>
     </CardWrapper>
