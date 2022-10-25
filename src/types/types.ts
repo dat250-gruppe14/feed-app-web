@@ -53,3 +53,27 @@ export interface DeviceVote {
   answerBCount: number;
   poll: Poll;
 }
+
+export interface PollOption {
+  description: string;
+  count?: number;
+}
+
+export interface PollCreateRequest {
+  pincode?: number;
+  question: string;
+  optionOne: string;
+  optionTwo: string;
+  access: PollAccess;
+  startDate: string;
+  endDate: string;
+}
+
+export interface PollUpdateRequest {
+  pincode?: number;
+  question?: string;
+  optionOne?: string;
+  optionTwo?: string;
+  access?: PollAccess;
+  endDate?: string;
+}
