@@ -1,21 +1,27 @@
 import React, { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { rem } from 'polished';
-import { colors } from 'src/styles/colors';
+
 
 
 interface props {
   onClick: () => void;
-  children?: React.ReactNode;
+  textColor: string;
+  backgroundColor: string;
 }
 
 
-const ButtonStyled = styled.button`
+
+const ButtonStyled = styled.button<props>`
   font_size: ${rem(4)};
   border-radius: ${rem(10)};
   padding: ${rem(6)};
-  background-color: ${colors.silver};
-  color: ${colors.black};
+  ${props => 
+    css`
+    color: ${props.textColor};
+    background-color: ${props.backgroundColor};
+    `}
+  
   width: fit-content;
   
   text-align: center;
@@ -25,10 +31,14 @@ const ButtonStyled = styled.button`
 
 export const Button: FC<props> = ({
   onClick,
-  children
+  children,
+  textColor,
+  backgroundColor
 
 }) => {
   return <ButtonStyled 
+        textColor = {textColor} 
+        backgroundColor = {backgroundColor}  
         onClick = {onClick}
         >
           {children}

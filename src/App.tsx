@@ -8,6 +8,7 @@ import GlobalStyle from './styles/global';
 import { Header } from './components/Header';
 import { PageWrapper } from './components/PageWrapper';
 import {Button} from './components/Button'
+import { colors } from './styles/colors';
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,6 @@ export const App = () => {
           <ErrorBoundary>
             <Routes />
           </ErrorBoundary>
-          <Button onClick = {() => console.log('Button clicked')} children = "Button"  />
         </PageWrapper>
       </Router>
       <ReactQueryDevtools initialIsOpen={false} />
