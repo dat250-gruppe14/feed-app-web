@@ -34,5 +34,6 @@ export const App = () => {
       </Router>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
+    
   );
 };

@@ -1,9 +1,51 @@
 import React, { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { rem } from 'polished';
 
-const ButtonBase: FC = () => {
-  // implement this
-  return <button />;
+
+
+interface props {
+  onClick: () => void;
+  textColor: string;
+  backgroundColor: string;
+}
+
+
+
+const ButtonStyled = styled.button<props>`
+  font_size: ${rem(4)};
+  border-radius: ${rem(10)};
+  padding: ${rem(6)};
+  ${props => 
+    css`
+    color: ${props.textColor};
+    background-color: ${props.backgroundColor};
+    `}
+  
+  width: fit-content;
+  
+  text-align: center;
+  vertical-align: middle;
+  
+`;
+
+export const Button: FC<props> = ({
+  onClick,
+  children,
+  textColor,
+  backgroundColor
+
+}) => {
+  return <ButtonStyled 
+        textColor = {textColor} 
+        backgroundColor = {backgroundColor}  
+        onClick = {onClick}
+        >
+          {children}
+          
+          </ButtonStyled>;
 };
 
-export const Button = styled(ButtonBase)``;
+
+
+
