@@ -38,7 +38,7 @@ export interface Poll {
   endDate: Date;
   access: PollAccess;
   isClosed: boolean;
-  userAnswer: Answer;
+  userAnswer?: Answer;
 }
 
 export interface Vote {
@@ -57,4 +57,23 @@ export interface DeviceVote {
 export interface PollOption {
   description: string;
   count?: number;
+}
+
+export interface PollCreateRequest {
+  pincode?: number;
+  question: string;
+  optionOne: string;
+  optionTwo: string;
+  access: PollAccess;
+  startDate: string;
+  endDate: string;
+}
+
+export interface PollUpdateRequest {
+  pincode?: number;
+  question?: string;
+  optionOne?: string;
+  optionTwo?: string;
+  access?: PollAccess;
+  endDate?: string;
 }
