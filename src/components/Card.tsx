@@ -1,8 +1,6 @@
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
@@ -53,6 +51,11 @@ const PollMeta = styled.div`
   padding: ${rem(4)} ${rem(14)};
 `;
 
+const ProgressWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 const VoteButton = styled(Button)`
   align-self: flex-end;
   background: ${colors.blueish};
@@ -60,7 +63,7 @@ const VoteButton = styled(Button)`
 `;
 
 interface CardProps {
-  title?: string;
+  title: string;
   optionOne: string;
   optionOneCount: number;
   optionTwo: string;
@@ -80,33 +83,35 @@ export const Card: FC<CardProps> = ({
   owner,
   userAnswer,
 }) => {
-  const location = useLocation();
   const votesCount = optionOneCount + optionTwoCount;
   const daysLeft = getRemainingPollDays(endDate);
-  const isVotePage = location.pathname.match(pathToRegexp('/vote'));
-  const canVote = userAnswer !== undefined;
+  const canVote = userAnswer === Answer.NONE;
 
   return (
     <CardWrapper>
-      {title && <CardTitle>{title}</CardTitle>}
+      <CardTitle>{title}</CardTitle>
       <>
         <OptionWrapper>
           <OptionDescription>{optionOne}</OptionDescription>
-          <Progress
-            background={colors.green}
-            value={optionOneCount}
-            total={votesCount}
-          />
-          {canVote && <VoteButton />}
+          <ProgressWrapper>
+            <Progress
+              background={colors.green}
+              value={optionOneCount}
+              total={votesCount}
+            />
+            {canVote && <VoteButton>Vote</VoteButton>}
+          </ProgressWrapper>
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
-          <Progress
-            background={colors.red}
-            value={optionTwoCount}
-            total={votesCount}
-          />
-          {canVote && <VoteButton />}
+          <ProgressWrapper>
+            <Progress
+              background={colors.red}
+              value={optionTwoCount}
+              total={votesCount}
+            />
+            {canVote && <VoteButton>Vote</VoteButton>}
+          </ProgressWrapper>
         </OptionWrapper>
       </>
       <CardFooter>
@@ -115,7 +120,7 @@ export const Card: FC<CardProps> = ({
             {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
           </PollMeta>
         )}
-        {owner && isVotePage && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+        {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>
     </CardWrapper>

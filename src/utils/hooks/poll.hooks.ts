@@ -5,7 +5,7 @@ import { createPoll, deletePoll, getPoll, getPolls, updatePoll } from "src/servi
 import { Poll, PollCreateRequest, PollUpdateRequest } from "src/types/types"
 import { FETCH_DEFAULT_OPTIONS } from "./config"
 
-export const usePolls = () => {
+export const useGetPolls = () => {
   return useQuery<Poll[], AxiosError>(
     ['polls'],
     () => getPolls(),
@@ -13,7 +13,7 @@ export const usePolls = () => {
   );
 }
 
-export const usePoll = (id: string) => {
+export const useGetPoll = (id: string) => {
   const queryClient = useQueryClient();
 
   return useQuery<Poll, AxiosError>(
