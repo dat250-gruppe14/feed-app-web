@@ -9,4 +9,6 @@ export const colors = {
   pink: '#BE4396',
   purpleText: '#B6B6E7',
   white: '#FFFFFF',
+  silver: '	#C0C0C0',
+  black: '#000000'
 };
