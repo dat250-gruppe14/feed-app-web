@@ -14,7 +14,7 @@ interface props {
 
 const ButtonStyled = styled.button<props>`
   font_size: ${rem(4)};
-  border-radius: ${rem(10)};
+  border-radius: ${rem(20)};
   padding: ${rem(6)};
   ${props => 
     css`
@@ -22,6 +22,7 @@ const ButtonStyled = styled.button<props>`
     background-color: ${props.backgroundColor};
     `}
   
+  box-shadow: 1px 2px 5px 1px rgba(0, 0, 0, 0.25);
   width: fit-content;
   
   text-align: center;
@@ -45,6 +46,14 @@ export const Button: FC<props> = ({
           
           </ButtonStyled>;
 };
+
+
+/**
+ * <Button onClick = {() => console.log('Button clicked')} 
+            children = 'Click&#8594;' 
+            textColor={colors.white}
+            backgroundColor = {colors.pink}/>
+ */
 
 
 
