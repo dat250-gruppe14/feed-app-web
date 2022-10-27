@@ -7,7 +7,6 @@ import { Routes } from './routes/Routes';
 import GlobalStyle from './styles/global';
 import { Header } from './components/Header';
 import { PageWrapper } from './components/PageWrapper';
-import { Card } from './components/Card';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +24,5 @@ export const App = () => {
       </Router>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-    
   );
 };
