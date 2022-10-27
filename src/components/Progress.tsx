@@ -6,6 +6,7 @@ import { colors } from 'src/styles/colors';
 import { calculatePercentage } from 'src/utils/utils';
 
 const ProgressBarWrapper = styled.div`
+  flex: 1;
   background: ${colors.backgroundTertiary};
   border-radius: ${rem(20)};
   margin-top: ${rem(4)};
