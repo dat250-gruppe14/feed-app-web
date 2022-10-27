@@ -1,8 +1,6 @@
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
@@ -68,6 +66,7 @@ interface CardProps {
   endDate?: Date;
   owner?: string;
   userAnswer?: Answer;
+  showPollMeta?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -79,12 +78,11 @@ export const Card: FC<CardProps> = ({
   endDate,
   owner,
   userAnswer,
+  showPollMeta = false,
 }) => {
-  const location = useLocation();
   const votesCount = optionOneCount + optionTwoCount;
   const daysLeft = getRemainingPollDays(endDate);
-  const isVotePage = location.pathname.match(pathToRegexp('/vote'));
-  const canVote = userAnswer !== undefined;
+  const canVote = userAnswer === Answer.NONE;
 
   return (
     <CardWrapper>
@@ -97,7 +95,7 @@ export const Card: FC<CardProps> = ({
             value={optionOneCount}
             total={votesCount}
           />
-          {canVote && <VoteButton />}
+          {canVote && <VoteButton>Vote</VoteButton>}
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
@@ -106,7 +104,7 @@ export const Card: FC<CardProps> = ({
             value={optionTwoCount}
             total={votesCount}
           />
-          {canVote && <VoteButton />}
+          {canVote && <VoteButton>Vote</VoteButton>}
         </OptionWrapper>
       </>
       <CardFooter>
@@ -115,7 +113,7 @@ export const Card: FC<CardProps> = ({
             {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
           </PollMeta>
         )}
-        {owner && isVotePage && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+        {owner && showPollMeta && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>
     </CardWrapper>
