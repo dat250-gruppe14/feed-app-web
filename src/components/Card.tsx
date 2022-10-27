@@ -6,7 +6,7 @@ import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
-import { Answer } from 'src/types/types';
+import { PollOption, PollCounts } from 'src/types/types';
 import { Progress } from './Progress';
 import { Button } from './Button';
 
@@ -62,26 +62,24 @@ const VoteButton = styled(Button)`
 interface CardProps {
   title?: string;
   optionOne: string;
-  optionOneCount: number;
   optionTwo: string;
-  optionTwoCount: number;
+  counts: PollCounts;
   endDate?: Date;
   owner?: string;
-  userAnswer?: Answer;
+  userAnswer?: PollOption;
 }
 
 export const Card: FC<CardProps> = ({
   title,
   optionOne,
-  optionOneCount,
   optionTwo,
-  optionTwoCount,
+  counts,
   endDate,
   owner,
   userAnswer,
 }) => {
   const location = useLocation();
-  const votesCount = optionOneCount + optionTwoCount;
+  const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const daysLeft = getRemainingPollDays(endDate);
   const isVotePage = location.pathname.match(pathToRegexp('/vote'));
   const canVote = userAnswer !== undefined;
@@ -94,7 +92,7 @@ export const Card: FC<CardProps> = ({
           <OptionDescription>{optionOne}</OptionDescription>
           <Progress
             background={colors.green}
-            value={optionOneCount}
+            value={counts.optionOneCount}
             total={votesCount}
           />
           {canVote && <VoteButton />}
@@ -103,7 +101,7 @@ export const Card: FC<CardProps> = ({
           <OptionDescription>{optionTwo}</OptionDescription>
           <Progress
             background={colors.red}
-            value={optionTwoCount}
+            value={counts.optionTwoCount}
             total={votesCount}
           />
           {canVote && <VoteButton />}

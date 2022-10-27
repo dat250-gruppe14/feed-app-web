@@ -21,15 +21,6 @@ export const App = () => {
           <ErrorBoundary>
             <Routes />
           </ErrorBoundary>
-          <Card 
-            title="Ananas på pizza?"
-            optionOne="Ja!"
-            optionOneCount={65}
-            optionTwo="Nei"
-            optionTwoCount={50}
-            owner="Lars"
-            canVote={false}
-          />
         </PageWrapper>
       </Router>
       <ReactQueryDevtools initialIsOpen={false} />
