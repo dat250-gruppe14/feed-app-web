@@ -7,8 +7,7 @@ import { Card } from 'src/components/Card';
 import { ArrowLeft } from 'src/components/svg/ArrowLeft';
 import { AccountRole, Answer, Poll, PollAccess } from 'src/types/types';
 import { baseRoutes } from 'src/routes/baseRoutes';
-import { colors } from 'src/styles/colors';
-import { Copy } from 'src/components/svg/Copy';
+import { CopyToClipboardButton } from 'src/components/CopyButton';
 
 const BackButton = styled(Link)`
 	display: flex;
@@ -18,25 +17,6 @@ const BackButton = styled(Link)`
 const ArrowWrapper = styled.div`
 	margin-right: ${rem(5)};
 	width: ${rem(22)};
-`;
-
-const CopyWrapper = styled.div`
-	margin-right: ${rem(5)};
-	width: ${rem(10)};
-`;
-
-const PincodeBoxWrapper = styled.div`
-	display: flex;
-	cursor: pointer;
-	justify-content: center;
-	width: 100%;
-`;
-const PincodeBox = styled.div`
-	align-self: center;
-	background: ${colors.backgroundSecondary};
-	border-radius: 20px;
-	display: inline-flex;
-	padding: 10px 23px;
 `;
 
 
@@ -80,14 +60,7 @@ export const VotePage: FC = () => {
 		    userAnswer={poll.userAnswer}
 		    showPollMeta
 		  />
-			<PincodeBoxWrapper onClick={() => navigator.clipboard.writeText(poll.id)}>
-				<PincodeBox>
-					<CopyWrapper>
-						<Copy />
-					</CopyWrapper>
-					Pincode: {poll.id}
-				</PincodeBox>
-			</PincodeBoxWrapper>
+			<CopyToClipboardButton label="Pincode" value={poll.id} />
 	  </>
 	);
 };
