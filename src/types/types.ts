@@ -66,12 +66,19 @@ export interface PollCreateRequest {
   endTime?: string;
 }
 
-export interface PollUpdateRequest {
-  question?: string;
-  optionOne?: string;
-  optionTwo?: string;
-  access?: PollAccess;
-  endTime?: string;
+interface PatchOperation {
+  op: string;
+  path: string;
+  value: string;
+}
+
+export enum PollPatchOption {
+  Access = "/access",
+  EndDate = "/endDate"
+}
+
+export interface PollPatchOperation extends PatchOperation {
+  path: PollPatchOption
 }
 
 export interface VoteRequest {

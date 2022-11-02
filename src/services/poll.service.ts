@@ -1,5 +1,5 @@
 import { apiClient } from "src/api/base";
-import { Poll, PollCreateRequest, PollUpdateRequest, Vote, VoteRequest } from "src/types/types";
+import { Poll, PollCreateRequest, PollPatchOperation, Vote, VoteRequest } from "src/types/types";
 
 const BASE_URL = "api/poll";
 
@@ -17,10 +17,11 @@ export const createPoll = async (
   return (await apiClient.post<Poll>(BASE_URL, request)).data;
 }
 
-export const updatePoll = async (
-  request: PollUpdateRequest
+export const patchPoll = async (
+  // JsonPatch expects an array of operations in the document
+  request: PollPatchOperation[]
 ): Promise<Poll> => {
-  return (await apiClient.put<Poll>(BASE_URL, request)).data;
+  return (await apiClient.patch<Poll>(BASE_URL, request)).data;
 }
 
 export const deletePoll = async (id: string): Promise<Poll> => {
