@@ -1,12 +1,11 @@
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { pathToRegexp } from 'path-to-regexp';
 
 import { colors } from 'src/styles/colors';
 import { getRemainingPollDays } from 'src/utils/utils';
-import { Answer } from 'src/types/types';
+import { PollOption, PollCounts } from 'src/types/types';
+import { useVotePoll } from 'src/hooks/poll.hooks';
 import { Progress } from './Progress';
 import { Button } from './Button';
 
@@ -61,29 +60,28 @@ const VoteButton = styled(Button)`
 
 interface CardProps {
   title?: string;
+  pincode: string;
   optionOne: string;
-  optionOneCount: number;
   optionTwo: string;
-  optionTwoCount: number;
-  endDate?: Date;
+  counts: PollCounts;
+  endTime?: Date;
   owner?: string;
-  userAnswer?: Answer;
+  userAnswer?: PollOption;
 }
 
 export const Card: FC<CardProps> = ({
   title,
+  pincode,
   optionOne,
-  optionOneCount,
   optionTwo,
-  optionTwoCount,
-  endDate,
+  counts,
+  endTime,
   owner,
   userAnswer,
 }) => {
-  const location = useLocation();
-  const votesCount = optionOneCount + optionTwoCount;
-  const daysLeft = getRemainingPollDays(endDate);
-  const isVotePage = location.pathname.match(pathToRegexp('/vote'));
+  const { mutate } = useVotePoll();
+  const votesCount = counts.optionOneCount + counts?.optionTwoCount;
+  const pollTimeRemaining = getRemainingPollDays(endTime);
   const canVote = userAnswer !== undefined;
 
   return (
@@ -94,28 +92,48 @@ export const Card: FC<CardProps> = ({
           <OptionDescription>{optionOne}</OptionDescription>
           <Progress
             background={colors.green}
-            value={optionOneCount}
+            value={counts.optionOneCount}
             total={votesCount}
           />
-          {canVote && <VoteButton />}
+          {canVote && (
+            <VoteButton
+              onClick={() =>
+                mutate({
+                  option: PollOption.One,
+                  pollId: pincode,
+                })
+              }
+            />
+          )}
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
           <Progress
             background={colors.red}
-            value={optionTwoCount}
+            value={counts.optionTwoCount}
             total={votesCount}
           />
-          {canVote && <VoteButton />}
+          {canVote && (
+            <VoteButton
+              onClick={() =>
+                mutate({
+                  option: PollOption.Two,
+                  pollId: pincode,
+                })
+              }
+            />
+          )}
         </OptionWrapper>
       </>
       <CardFooter>
-        {daysLeft && (
+        {pollTimeRemaining && (
           <PollMeta>
-            {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
+            {pollTimeRemaining <= 1
+              ? `${pollTimeRemaining} day left`
+              : `${pollTimeRemaining} days left`}
           </PollMeta>
         )}
-        {owner && isVotePage && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+        {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>
     </CardWrapper>
