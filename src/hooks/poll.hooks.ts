@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { createPoll, deletePoll, getPoll, getPolls, updatePoll, votePoll } from "src/services/poll.service"
-import { Poll, PollCreateRequest, PollUpdateRequest, Vote, VoteRequest } from "src/types/types"
+import { createPoll, deletePoll, getPoll, getPolls, patchPoll, votePoll } from "src/services/poll.service"
+import { Poll, PollCreateRequest, PollPatchOperation, Vote, VoteRequest } from "src/types/types"
 import { FETCH_DEFAULT_OPTIONS } from "./config"
 
 export const useGetPolls = () => {
@@ -40,10 +40,10 @@ export const useCreatePoll = () => {
   })
 }
 
-export const useUpdatePoll = () => {
+export const usePatchPoll = () => {
   const queryClient = useQueryClient();
 
-  return useMutation((request: PollUpdateRequest) => updatePoll(request), {
+  return useMutation((request: PollPatchOperation[]) => patchPoll(request), {
     onSuccess: (newPoll: Poll) => {
       queryClient.setQueryData(['polls', newPoll.id], newPoll);
     },

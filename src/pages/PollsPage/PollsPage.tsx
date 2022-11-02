@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
@@ -19,94 +19,83 @@ export const PollsPage: FC = () => {
   const now = new Date();
   const polls = useGetPolls();
 
-  // TODO: Add auth
-  // const token = Cookies.get("token");
+  // TODO: Use auth to get user
   // const auth = useAuth(token);
   // const user = auth.data !== null;
   const user = false;
 
-  const dataWithStatus = [
-    polls,
-    // auth,
-  ];
+  if (!polls.isSuccess) {
+    return null;
+  }
 
-  // const isLoading = dataWithStatus.every(d => d.isLoading);
-  // const isError = dataWithStatus.find(d => d.isError) !== undefined;
+  const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
+  const ongoingPolls = polls.data.filter(
+    poll => !poll.endTime || poll.endTime > now,
+  );
 
-  // if (isLoading) {
-  //   return null;
-  // }
+  // const mockOwned: Poll[] = [
+  //   {
+  //     id: '1',
+  //     pincode: '123321',
+  //     question: 'Ananas på pizza?',
+  //     optionOne: 'Ja',
+  //     optionTwo: 'Nei',
+  //     counts: {
+  //       optionOneCount: 10,
+  //       optionTwoCount: 20,
+  //     },
+  //     owner: {
+  //       id: '1',
+  //       name: 'Lars',
+  //       role: AccountRole.User,
+  //     },
+  //     startTime: now,
+  //     endTime: new Date(now.setDate(now.getDate() + 2)),
+  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
+  //     access: PollAccess.Public,
+  //   },
+  // ];
 
-  // if (isError) {
-  //   return null;
-  // }
-
-  // const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
-  // const ongoingPolls = polls.data.filter(poll => !poll.endTime || poll.endTime > now);
-
-  const mockOwned: Poll[] = [
-    {
-      id: '1',
-      pincode: '123321',
-      question: 'Ananas på pizza?',
-      optionOne: 'Ja',
-      optionTwo: 'Nei',
-      counts: {
-        optionOneCount: 10,
-        optionTwoCount: 20,
-      },
-      owner: {
-        id: '1',
-        name: 'Lars',
-        role: AccountRole.User,
-      },
-      startTime: now,
-      endTime: new Date(now.setDate(now.getDate() + 2)),
-      createdTime: new Date(now.setDate(now.getDate() - 2)),
-      access: PollAccess.Public,
-    },
-  ];
-
-  const mockOngoing: Poll[] = [
-    {
-      id: '1',
-      pincode: '123456',
-      question: 'Tomaito eller tomato?',
-      optionOne: 'Tomaito',
-      optionTwo: 'Tomato',
-      counts: {
-        optionOneCount: 23,
-        optionTwoCount: 19,
-      },
-      owner: {
-        id: '2',
-        name: 'Tim',
-        role: AccountRole.User,
-      },
-      startTime: now,
-      createdTime: new Date(now.setDate(now.getDate() - 2)),
-      access: PollAccess.Public,
-    },
-    {
-      id: '3',
-      pincode: '123123',
-      question: 'Sommer eller vinter?',
-      optionOne: 'Sommer :)',
-      optionTwo: 'Vinter! *brr*',
-      counts: {
-        optionOneCount: 16,
-        optionTwoCount: 16,
-      },
-      owner: {
-        id: '',
-        name: '',
-        role: AccountRole.User,
-      },
-      startTime: now,
-      createdTime: new Date(now.setDate(now.getDate() - 2)),
-      access: PollAccess.Public,
-    },
-  ];
+  // const mockOngoing: Poll[] = [
+  //   {
+  //     id: '1',
+  //     pincode: '123456',
+  //     question: 'Tomaito eller tomato?',
+  //     optionOne: 'Tomaito',
+  //     optionTwo: 'Tomato',
+  //     counts: {
+  //       optionOneCount: 23,
+  //       optionTwoCount: 19,
+  //     },
+  //     owner: {
+  //       id: '2',
+  //       name: 'Tim',
+  //       role: AccountRole.User,
+  //     },
+  //     startTime: now,
+  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
+  //     access: PollAccess.Public,
+  //   },
+  //   {
+  //     id: '3',
+  //     pincode: '123123',
+  //     question: 'Sommer eller vinter?',
+  //     optionOne: 'Sommer :)',
+  //     optionTwo: 'Vinter! *brr*',
+  //     counts: {
+  //       optionOneCount: 16,
+  //       optionTwoCount: 16,
+  //     },
+  //     owner: {
+  //       id: '',
+  //       name: '',
+  //       role: AccountRole.User,
+  //     },
+  //     startTime: now,
+  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
+  //     access: PollAccess.Public,
+  //   },
+  // ];
 
   return (
     <>
@@ -120,7 +109,7 @@ export const PollsPage: FC = () => {
       <Heading>Join poll by pincode</Heading>
       <Input type="number" placeholder="Enter pincode..." />
       <Heading>My polls</Heading>
-      {mockOwned.map(poll => {
+      {ownedPolls.map(poll => {
         return (
           <Card
             title={poll.question}
@@ -132,7 +121,7 @@ export const PollsPage: FC = () => {
         );
       })}
       <Heading>Ongoing polls</Heading>
-      {mockOngoing.map(poll => {
+      {ongoingPolls.map(poll => {
         return (
           <Card
             title={poll.question}
