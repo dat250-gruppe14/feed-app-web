@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
+import { getRemainingTime } from 'src/utils/utils';
 import { getRemainingPollDays } from 'src/utils/utils';
 import { PollOption, PollCounts } from 'src/types/types';
 import { useVotePoll } from 'src/hooks/poll.hooks';
@@ -32,6 +33,15 @@ const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: ${rem(12)};
+`;
+const ProgressWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+	width: 100%;
+
+	div:first-child {
+		margin-right: 20px;
+	}
 `;
 
 const OptionDescription = styled.p`
@@ -66,6 +76,7 @@ interface CardProps {
   counts: PollCounts;
   endTime?: Date;
   owner?: string;
+  showPollMeta?: boolean;
   userAnswer?: PollOption;
 }
 
@@ -78,11 +89,14 @@ export const Card: FC<CardProps> = ({
   endTime,
   owner,
   userAnswer,
+  showPollMeta = false,
 }) => {
+  const timeLeft = getRemainingTime(endTime);
+  const canVote = userAnswer === undefined;
+	console.log({canVote, userAnswer});
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const pollTimeRemaining = getRemainingPollDays(endTime);
-  const canVote = userAnswer !== undefined;
 
   return (
     <CardWrapper>
@@ -103,7 +117,9 @@ export const Card: FC<CardProps> = ({
                   pollId: pincode,
                 })
               }
-            />
+            >
+						Vote
+						</VoteButton>
           )}
         </OptionWrapper>
         <OptionWrapper>
@@ -121,16 +137,16 @@ export const Card: FC<CardProps> = ({
                   pollId: pincode,
                 })
               }
-            />
+            >
+						Vote
+						</VoteButton>
           )}
         </OptionWrapper>
       </>
       <CardFooter>
-        {pollTimeRemaining && (
+        {timeLeft && (
           <PollMeta>
-            {pollTimeRemaining <= 1
-              ? `${pollTimeRemaining} day left`
-              : `${pollTimeRemaining} days left`}
+            {timeLeft}
           </PollMeta>
         )}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
