@@ -10,18 +10,23 @@ type CopyButtonProps = {
 	value: string;
 }
 
-const CopyWrapper = styled.div`
+const CopyIconWrapper = styled.div`
 	margin-right: ${rem(5)};
 	width: ${rem(10)};
 `;
 
-const PincodeBoxWrapper = styled.div`
+const CopyButtonWrapper = styled.div`
 	display: flex;
 	cursor: pointer;
 	justify-content: center;
 	width: 100%;
+
+	&:active {
+		filter: brightness(85%);
+	}
 `;
-const PincodeBox = styled.div`
+
+const CopyBox = styled.div`
 	align-self: center;
 	background: ${colors.backgroundSecondary};
 	border-radius: 20px;
@@ -43,13 +48,13 @@ export const CopyToClipboardButton: FC<CopyButtonProps> = ({label, value}) => {
 	}
 
 	return (
-			<PincodeBoxWrapper onClick={copyFunction}>
-				<PincodeBox>
-					<CopyWrapper>
+			<CopyButtonWrapper onClick={copyFunction}>
+				<CopyBox>
+					<CopyIconWrapper>
 						<Copy />
-					</CopyWrapper>
+					</CopyIconWrapper>
 					{`${labelText}: ${value}`}
-				</PincodeBox>
-			</PincodeBoxWrapper>
+				</CopyBox>
+			</CopyButtonWrapper>
 	)
 }

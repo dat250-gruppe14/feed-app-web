@@ -32,6 +32,15 @@ const OptionWrapper = styled.div`
   flex-direction: column;
   margin-bottom: ${rem(12)};
 `;
+const ProgressWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+	width: 100%;
+
+	div:first-child {
+		margin-right: 20px;
+	}
+`;
 
 const OptionDescription = styled.p`
   font-size: ${rem(14)};
@@ -90,21 +99,25 @@ export const Card: FC<CardProps> = ({
       <>
         <OptionWrapper>
           <OptionDescription>{optionOne}</OptionDescription>
-          <Progress
-            background={colors.green}
-            value={optionOneCount}
-            total={votesCount}
-          />
-          {canVote && <VoteButton>Vote</VoteButton>}
+					<ProgressWrapper>
+						<Progress
+							background={colors.green}
+							value={optionOneCount}
+							total={votesCount}
+						/>
+						{canVote && <VoteButton>Vote</VoteButton>}
+					</ProgressWrapper>
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
-          <Progress
-            background={colors.red}
-            value={optionTwoCount}
-            total={votesCount}
-          />
-          {canVote && <VoteButton>Vote</VoteButton>}
+					<ProgressWrapper>
+						<Progress
+							background={colors.red}
+							value={optionTwoCount}
+							total={votesCount}
+						/>
+						{canVote && <VoteButton>Vote</VoteButton>}
+					</ProgressWrapper>
         </OptionWrapper>
       </>
       <CardFooter>
