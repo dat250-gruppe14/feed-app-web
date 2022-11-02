@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { getRemainingPollDays } from 'src/utils/utils';
+import { getRemainingTime } from 'src/utils/utils';
 import { Answer } from 'src/types/types';
 import { Progress } from './Progress';
 import { Button } from './Button';
@@ -81,7 +81,7 @@ export const Card: FC<CardProps> = ({
   showPollMeta = false,
 }) => {
   const votesCount = optionOneCount + optionTwoCount;
-  const daysLeft = getRemainingPollDays(endDate);
+  const timeLeft = getRemainingTime(endDate);
   const canVote = userAnswer === Answer.NONE;
 
   return (
@@ -108,9 +108,9 @@ export const Card: FC<CardProps> = ({
         </OptionWrapper>
       </>
       <CardFooter>
-        {daysLeft && (
+        {timeLeft && (
           <PollMeta>
-            {daysLeft === 1 ? `${daysLeft} day left` : `${daysLeft} days left`}
+            {timeLeft}
           </PollMeta>
         )}
         {owner && showPollMeta && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
