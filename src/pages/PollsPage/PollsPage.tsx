@@ -6,6 +6,9 @@ import { Card } from 'src/components/Card';
 import { useGetPolls } from 'src/hooks/poll.hooks';
 import { Input } from 'src/components/Input';
 import { AccountRole, Poll, PollAccess } from 'src/types/types';
+import { Alert } from 'src/components/Alert';
+import { AlertCircle } from 'src/components/svg/AlertCircle';
+import { baseRoutes } from 'src/routes/baseRoutes';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
@@ -14,7 +17,21 @@ const Heading = styled.div`
 
 export const PollsPage: FC = () => {
   const now = new Date();
-  const { isLoading, isError, data } = useGetPolls();
+  const polls = useGetPolls();
+
+  // TODO: Add auth
+  // const token = Cookies.get("token");
+  // const auth = useAuth(token);
+  // const user = auth.data !== null;
+  const user = false;
+
+  const dataWithStatus = [
+    polls,
+    // auth,
+  ];
+
+  // const isLoading = dataWithStatus.every(d => d.isLoading);
+  // const isError = dataWithStatus.find(d => d.isError) !== undefined;
 
   // if (isLoading) {
   //   return null;
@@ -24,8 +41,8 @@ export const PollsPage: FC = () => {
   //   return null;
   // }
 
-  // const ownedPolls = data.filter(poll => poll.owner.name === '');
-  // const ongoingPolls = data.filter(poll => !poll.endTime || poll.endTime > now);
+  // const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
+  // const ongoingPolls = polls.data.filter(poll => !poll.endTime || poll.endTime > now);
 
   const mockOwned: Poll[] = [
     {
@@ -93,9 +110,16 @@ export const PollsPage: FC = () => {
 
   return (
     <>
+      {!user ? (
+        <Alert
+          description="Log in to create and join private polls!"
+          icon={<AlertCircle />}
+          href={baseRoutes.login}
+        />
+      ) : null}
       <Heading>Join poll by pincode</Heading>
       <Input type="number" placeholder="Enter pincode..." />
-      <Heading>Owned polls</Heading>
+      <Heading>My polls</Heading>
       {mockOwned.map(poll => {
         return (
           <Card
