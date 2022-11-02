@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
@@ -35,26 +35,14 @@ interface InputProps {
   icon?: ReactNode;
 }
 
-export const Input: FC<InputProps> = ({
-  type,
-  placeholder,
-  icon
-}) => {
-  const [input, setInput] = useState('');
-
-  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setInput(e.currentTarget.value)
-  }
-
+export const Input: FC<InputProps> = ({ type, placeholder, icon }) => {
   return (
     <InputWrapper>
       <StyledInput
-        type={type || "text"}
-        placeholder={placeholder || "Enter..."}
-        onChange={handleChange}
-        value={input}
+        type={type || 'text'}
+        placeholder={placeholder || 'Enter...'}
       />
       {icon && <IconWrapper>{icon}</IconWrapper>}
     </InputWrapper>
   );
-}
+};

@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { createPoll, deletePoll, getPoll, getPolls, updatePoll } from "src/services/poll.service"
-import { Poll, PollCreateRequest, PollUpdateRequest } from "src/types/types"
+import { createPoll, deletePoll, getPoll, getPolls, updatePoll, votePoll } from "src/services/poll.service"
+import { Poll, PollCreateRequest, PollUpdateRequest, Vote, VoteRequest } from "src/types/types"
 import { FETCH_DEFAULT_OPTIONS } from "./config"
 
-export const usePolls = () => {
+export const useGetPolls = () => {
   return useQuery<Poll[], AxiosError>(
     ['polls'],
     () => getPolls(),
@@ -13,7 +13,7 @@ export const usePolls = () => {
   );
 }
 
-export const usePoll = (id: string) => {
+export const useGetPoll = (id: string) => {
   const queryClient = useQueryClient();
 
   return useQuery<Poll, AxiosError>(
@@ -21,7 +21,7 @@ export const usePoll = (id: string) => {
     () => getPoll(id),
     {
       ...FETCH_DEFAULT_OPTIONS,
-      initialData: () => queryClient.getQueryData<Poll[]>(['polls'])?.find(p => p.id === id),
+      initialData: () => queryClient.getQueryData<Poll[]>(['polls'])?.find(p => p.pincode === id),
       initialDataUpdatedAt: () => queryClient.getQueryState(['polls'])?.dataUpdatedAt
     },
   );
@@ -31,7 +31,7 @@ export const useCreatePoll = () => {
   const queryClient = useQueryClient();
 
   return useMutation((request: PollCreateRequest) => createPoll(request), {
-    onSuccess: (newPoll) => {
+    onSuccess: (newPoll: Poll) => {
       queryClient.setQueryData(['polls', newPoll.id], newPoll);
     },
     onError: () => {
@@ -57,12 +57,22 @@ export const useDeletePoll = () => {
   const queryClient = useQueryClient();
 
   return useMutation((id: string) => deletePoll(id), {
-    onSuccess: () => {
+    onSuccess: (oldPoll: Poll) => {
       queryClient.invalidateQueries(['polls']);
-      queryClient.invalidateQueries(['polls']);
+      queryClient.invalidateQueries(['polls', oldPoll.id]);
     },
     onError: () => {
       console.log("useDeletePoll error");
+    }
+  })
+}
+
+export const useVotePoll = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation((request: VoteRequest) => votePoll(request.pollId, request), {
+    onSuccess: (newVote: Vote) => {
+      queryClient.invalidateQueries(['polls', newVote.pollId]);
     }
   })
 }

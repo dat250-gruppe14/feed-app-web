@@ -20,31 +20,35 @@ export interface Device {
   pincode: number;
 }
 
-export enum Answer {
-  NONE,
-  ANSWER_A,
-  ANSWER_B
+export enum PollOption {
+  One,
+  Two
+}
+
+export interface PollCounts {
+  optionOneCount: number;
+  optionTwoCount: number;
 }
 
 export interface Poll {
   id: string;
+  pincode: string;
   question: string;
   optionOne: string;
   optionTwo: string;
+  counts: PollCounts;
   owner: User;
-  optionOneCount: number;
-  optionTwoCount: number;
-  startDate: Date;
-  endDate: Date;
   access: PollAccess;
-  isClosed: boolean;
-  userAnswer?: Answer;
+  startTime: Date;
+  endTime?: Date;
+  createdTime: Date;
+  userAnswer?: PollOption;
 }
 
 export interface Vote {
   id: string;
-  option: Answer;
-  poll: Poll;
+  option: PollOption;
+  pollId: string;
 }
 
 export interface DeviceVote {
@@ -53,27 +57,24 @@ export interface DeviceVote {
   answerBCount: number;
   poll: Poll;
 }
-
-export interface PollOption {
-  description: string;
-  count?: number;
-}
-
 export interface PollCreateRequest {
-  pincode?: number;
   question: string;
   optionOne: string;
   optionTwo: string;
   access: PollAccess;
-  startDate: string;
-  endDate: string;
+  startTime: string;
+  endTime?: string;
 }
 
 export interface PollUpdateRequest {
-  pincode?: number;
   question?: string;
   optionOne?: string;
   optionTwo?: string;
   access?: PollAccess;
-  endDate?: string;
+  endTime?: string;
+}
+
+export interface VoteRequest {
+  option: PollOption;
+  pollId: string;
 }

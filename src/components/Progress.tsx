@@ -10,13 +10,13 @@ const ProgressBarWrapper = styled.div`
   border-radius: ${rem(20)};
   margin-top: ${rem(4)};
 	width: 100%;
-`
+`;
 
-const Bar = styled.div<{percentage: number, background: string}>`
+const Bar = styled.div<{ percentage: number; background: string }>`
   display: flex;
   background: ${({ background }) => background};
   border-radius: inherit;
-  box-shadow: ${rem(4)} ${rem(0)} ${rem(10)} rgba(0,0,0,0.25);
+  box-shadow: ${rem(4)} ${rem(0)} ${rem(10)} rgba(0, 0, 0, 0.25);
   color: black;
   font-weight: 700;
   justify-content: flex-end;
@@ -34,18 +34,15 @@ interface ProgressBarProps {
 export const Progress: FC<ProgressBarProps> = ({
   value,
   total,
-  background
+  background,
 }) => {
   const percentageValue = Math.round(calculatePercentage(value, total));
 
   return (
     <ProgressBarWrapper>
-      <Bar
-        percentage={percentageValue}
-        background={background}
-      >
+      <Bar percentage={percentageValue} background={background}>
         {`${percentageValue}%`}
       </Bar>
     </ProgressBarWrapper>
   );
-}
+};
