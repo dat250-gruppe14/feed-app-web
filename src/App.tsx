@@ -7,7 +7,6 @@ import { Routes } from './routes/Routes';
 import GlobalStyle from './styles/global';
 import { Header } from './components/Header';
 import { PageWrapper } from './components/PageWrapper';
-import { Card } from './components/Card';
 
 const queryClient = new QueryClient();
 
@@ -21,15 +20,6 @@ export const App = () => {
           <ErrorBoundary>
             <Routes />
           </ErrorBoundary>
-          <Card 
-            title="Ananas på pizza?"
-            optionOne="Ja!"
-            optionOneCount={65}
-            optionTwo="Nei"
-            optionTwoCount={50}
-            owner="Lars"
-            canVote={false}
-          />
         </PageWrapper>
       </Router>
       <ReactQueryDevtools initialIsOpen={false} />

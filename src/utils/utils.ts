@@ -31,3 +31,34 @@ export const getRemainingPollDays = (
 
   return difference;
 };
+
+const msInDay = 24 * 60 * 60 * 1000;
+const msInHour = 60 * 60 * 1000;
+const msInMinut = 60 * 60 * 1000;
+
+const getRemainingTimeWithUnit = (timeDiff: number): string => {
+	if (timeDiff < msInHour){
+		const diffInMinutes = Math.round(timeDiff / msInMinut)
+		return diffInMinutes === 1 ? `${diffInMinutes} minut` : `${diffInMinutes} minutes`;
+	}
+	if (timeDiff < msInDay){
+		const diffInHours = Math.round(timeDiff / msInHour)
+		return diffInHours === 1 ? `${diffInHours} hour` : `${diffInHours} hours`;
+	}
+
+  const diffInDays = Math.round(timeDiff / msInDay); 
+	return diffInDays === 1 ? `${diffInDays} day` : `${diffInDays} days`;
+}
+
+export const getRemainingTime = (endDate: Date | undefined): string => {
+	if (endDate === undefined){
+		return '';
+	}
+	const timeDiff = Number(endDate) - Number(new Date())
+	console.log({timeDiff})
+
+	const diffWithTimeUnit = getRemainingTimeWithUnit(Math.abs(timeDiff))
+
+	return timeDiff >= 0 ? `${diffWithTimeUnit} left` : `Expired ${diffWithTimeUnit} ago`;
+
+}
