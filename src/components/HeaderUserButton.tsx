@@ -34,6 +34,8 @@ const Popover = styled.div<PopoverProps>`
   transform: translateY(0px);
   transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
 
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.3));
+
   &::before {
     content: '';
     position: absolute;
