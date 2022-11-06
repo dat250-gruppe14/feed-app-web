@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, InputHTMLAttributes, ReactNode } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
@@ -9,7 +9,6 @@ const InputWrapper = styled.div`
   flex-direction: row;
   background: ${colors.backgroundSecondary} !important;
   border-radius: ${rem(10)};
-  margin: ${rem(20)} 0;
 `;
 
 const StyledInput = styled.input`
@@ -17,9 +16,10 @@ const StyledInput = styled.input`
   border-radius: inherit;
   border: none;
   flex: 1;
-  height: max-content;
+  height: ${rem(50)};
   padding: ${rem(12)};
   width: 100%;
+  font-size: ${rem(18)};
 `;
 
 const IconWrapper = styled.div`
@@ -29,18 +29,19 @@ const IconWrapper = styled.div`
   padding-right: ${rem(12)};
 `;
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: string;
   placeholder?: string;
   icon?: ReactNode;
 }
 
-export const Input: FC<InputProps> = ({ type, placeholder, icon }) => {
+export const Input: FC<InputProps> = ({ type, placeholder, icon, ...rest }) => {
   return (
     <InputWrapper>
       <StyledInput
         type={type || 'text'}
         placeholder={placeholder || 'Enter...'}
+        {...rest}
       />
       {icon && <IconWrapper>{icon}</IconWrapper>}
     </InputWrapper>

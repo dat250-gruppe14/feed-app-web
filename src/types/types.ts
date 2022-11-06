@@ -1,16 +1,17 @@
 export enum PollAccess {
-  Public = "Public",
-  Private = "Private",
+  Public = 'Public',
+  Private = 'Private',
 }
 
 export enum AccountRole {
-  User = "User",
-  Admin = "Admin",
+  User = 'User',
+  Admin = 'Admin',
 }
 
 export interface User {
   id: string;
   name: string;
+  email: string;
   role: AccountRole;
 }
 
@@ -22,7 +23,7 @@ export interface Device {
 
 export enum PollOption {
   One,
-  Two
+  Two,
 }
 
 export interface PollCounts {
@@ -73,15 +74,31 @@ interface PatchOperation {
 }
 
 export enum PollPatchOption {
-  Access = "/access",
-  EndDate = "/endDate"
+  Access = '/access',
+  EndDate = '/endDate',
 }
 
 export interface PollPatchOperation extends PatchOperation {
-  path: PollPatchOption
+  path: PollPatchOption;
 }
 
 export interface VoteRequest {
   option: PollOption;
   pollId: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  name: string;
+  password: string;
+}
+
+export interface UserWithToken {
+  user: User;
+  token: string;
 }

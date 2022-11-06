@@ -1,7 +1,11 @@
 import { rem } from 'polished';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGetAuth, useLogOut } from 'src/hooks/auth.hooks';
 import { useClickedOutsideCallback } from 'src/hooks/useClickedOutsideCallback';
+import { baseRoutes } from 'src/routes/baseRoutes';
 import { colors } from 'src/styles/colors';
+import { deleteTokens } from 'src/utils/utils';
 import styled, { css } from 'styled-components';
 import { ArrowDown } from './svg/ArrowDown';
 import { Person } from './svg/Person';
@@ -120,8 +124,28 @@ const ItemText = styled.div`
 export const HeaderUserButton = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const navigate = useNavigate();
+  const logout = useLogOut();
+  const user = useGetAuth();
+
   const ref = useRef(null);
   useClickedOutsideCallback(ref, () => setMenuOpen(false));
+
+  const handleSignOut = () => {
+    logout();
+    navigate(baseRoutes.login);
+    setMenuOpen(false);
+  };
+
+  const handleNavigateToProfile = () => {
+    navigate(baseRoutes.profile);
+    setMenuOpen(false);
+  };
+
+  const handleSignIn = () => {
+    navigate(baseRoutes.login);
+    setMenuOpen(false);
+  };
 
   return (
     <UserButtonAndPopoverWrapper ref={ref}>
@@ -132,18 +156,29 @@ export const HeaderUserButton = () => {
         </RotatableArrowWrapper>
       </UserButtonWrapper>
       <Popover show={menuOpen}>
-        <PopoverItem>
-          <ItemIcon>
-            <Person />
-          </ItemIcon>
-          <ItemText>Your profile</ItemText>
-        </PopoverItem>
-        <PopoverItem>
-          <ItemIcon>
-            <SignOut />
-          </ItemIcon>
-          <ItemText>Sign out</ItemText>
-        </PopoverItem>
+        {user?.data ? (
+          <>
+            <PopoverItem onClick={handleNavigateToProfile}>
+              <ItemIcon>
+                <Person />
+              </ItemIcon>
+              <ItemText>Your profile</ItemText>
+            </PopoverItem>
+            <PopoverItem onClick={handleSignOut}>
+              <ItemIcon>
+                <SignOut />
+              </ItemIcon>
+              <ItemText>Sign out</ItemText>
+            </PopoverItem>
+          </>
+        ) : (
+          <PopoverItem onClick={handleSignIn}>
+            <ItemIcon>
+              <SignOut />
+            </ItemIcon>
+            <ItemText>Sign in</ItemText>
+          </PopoverItem>
+        )}
       </Popover>
     </UserButtonAndPopoverWrapper>
   );

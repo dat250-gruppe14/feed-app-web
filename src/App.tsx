@@ -8,7 +8,7 @@ import GlobalStyle from './styles/global';
 import { Header } from './components/Header';
 import { PageWrapper } from './components/PageWrapper';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export const App = () => {
   return (

@@ -1,5 +1,6 @@
 import { pathToRegexp } from 'path-to-regexp';
 import { baseRoutes } from 'src/routes/baseRoutes';
+import jwtDecode from 'jwt-decode';
 
 export const LOGIN_HEADER = 'FEEDAPP';
 export const mapRouteToHeaderTitle = (path: string) => {
@@ -37,28 +38,55 @@ const msInHour = 60 * 60 * 1000;
 const msInMinut = 60 * 60 * 1000;
 
 const getRemainingTimeWithUnit = (timeDiff: number): string => {
-	if (timeDiff < msInHour){
-		const diffInMinutes = Math.round(timeDiff / msInMinut)
-		return diffInMinutes === 1 ? `${diffInMinutes} minut` : `${diffInMinutes} minutes`;
-	}
-	if (timeDiff < msInDay){
-		const diffInHours = Math.round(timeDiff / msInHour)
-		return diffInHours === 1 ? `${diffInHours} hour` : `${diffInHours} hours`;
-	}
+  if (timeDiff < msInHour) {
+    const diffInMinutes = Math.round(timeDiff / msInMinut);
+    return diffInMinutes === 1
+      ? `${diffInMinutes} minut`
+      : `${diffInMinutes} minutes`;
+  }
+  if (timeDiff < msInDay) {
+    const diffInHours = Math.round(timeDiff / msInHour);
+    return diffInHours === 1 ? `${diffInHours} hour` : `${diffInHours} hours`;
+  }
 
-  const diffInDays = Math.round(timeDiff / msInDay); 
-	return diffInDays === 1 ? `${diffInDays} day` : `${diffInDays} days`;
-}
+  const diffInDays = Math.round(timeDiff / msInDay);
+  return diffInDays === 1 ? `${diffInDays} day` : `${diffInDays} days`;
+};
 
 export const getRemainingTime = (endDate: Date | undefined): string => {
-	if (endDate === undefined){
-		return '';
-	}
-	const timeDiff = Number(endDate) - Number(new Date())
-	console.log({timeDiff})
+  if (endDate === undefined) {
+    return '';
+  }
+  const timeDiff = Number(endDate) - Number(new Date());
+  console.log({ timeDiff });
 
-	const diffWithTimeUnit = getRemainingTimeWithUnit(Math.abs(timeDiff))
+  const diffWithTimeUnit = getRemainingTimeWithUnit(Math.abs(timeDiff));
 
-	return timeDiff >= 0 ? `${diffWithTimeUnit} left` : `Expired ${diffWithTimeUnit} ago`;
+  return timeDiff >= 0
+    ? `${diffWithTimeUnit} left`
+    : `Expired ${diffWithTimeUnit} ago`;
+};
 
-}
+export const jwtTokenHasExpired = (
+  token: string | undefined | null,
+): boolean => {
+  if (!token) return true;
+
+  const decodedToken: { exp: number } = jwtDecode(token);
+  if (!decodedToken) return true;
+
+  return decodedToken.exp * 1000 < new Date().getTime();
+};
+
+export const setToken = (token: string) => {
+  localStorage.setItem('jwtToken', token);
+};
+
+export const getToken = () => {
+  return localStorage.getItem('jwtToken');
+};
+
+export const deleteTokens = () => {
+  localStorage.removeItem('jwtToken');
+  document.cookie = '';
+};
