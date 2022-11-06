@@ -9,10 +9,15 @@ import { AccountRole, Poll, PollAccess } from 'src/types/types';
 import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
 import { baseRoutes } from 'src/routes/baseRoutes';
+import { Spinner } from 'src/components/Spinner';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
   font-weight: 700;
+`;
+
+const InputWrapper = styled.div`
+  margin: ${rem(20)} 0;
 `;
 
 export const PollsPage: FC = () => {
@@ -25,7 +30,7 @@ export const PollsPage: FC = () => {
   const user = false;
 
   if (!polls.isSuccess) {
-    return null;
+    return <Spinner />;
   }
 
   const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
@@ -107,7 +112,9 @@ export const PollsPage: FC = () => {
         />
       ) : null}
       <Heading>Join poll by pincode</Heading>
-      <Input type="number" placeholder="Enter pincode..." />
+      <InputWrapper>
+        <Input type="number" placeholder="Enter pincode..." />
+      </InputWrapper>
       <Heading>My polls</Heading>
       {ownedPolls.map(poll => {
         return (
@@ -121,7 +128,7 @@ export const PollsPage: FC = () => {
         );
       })}
       <Heading>Ongoing polls</Heading>
-      {ongoingPolls.map(poll => {
+      {polls.data.map(poll => {
         return (
           <Card
             title={poll.question}

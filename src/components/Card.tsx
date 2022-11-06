@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { getRemainingTime } from 'src/utils/utils';
-import { getRemainingPollDays } from 'src/utils/utils';
+import { getRemainingTime, getRemainingPollDays } from 'src/utils/utils';
 import { PollOption, PollCounts } from 'src/types/types';
 import { useVotePoll } from 'src/hooks/poll.hooks';
 import { Progress } from './Progress';
@@ -37,11 +36,11 @@ const OptionWrapper = styled.div`
 const ProgressWrapper = styled.div`
   display: flex;
   flex-direction: row;
-	width: 100%;
+  width: 100%;
 
-	div:first-child {
-		margin-right: 20px;
-	}
+  div:first-child {
+    margin-right: 20px;
+  }
 `;
 
 const OptionDescription = styled.p`
@@ -93,7 +92,7 @@ export const Card: FC<CardProps> = ({
 }) => {
   const timeLeft = getRemainingTime(endTime);
   const canVote = userAnswer === undefined;
-	console.log({canVote, userAnswer});
+  console.log({ canVote, userAnswer });
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const pollTimeRemaining = getRemainingPollDays(endTime);
@@ -118,8 +117,8 @@ export const Card: FC<CardProps> = ({
                 })
               }
             >
-						Vote
-						</VoteButton>
+              Vote
+            </VoteButton>
           )}
         </OptionWrapper>
         <OptionWrapper>
@@ -138,17 +137,13 @@ export const Card: FC<CardProps> = ({
                 })
               }
             >
-						Vote
-						</VoteButton>
+              Vote
+            </VoteButton>
           )}
         </OptionWrapper>
       </>
       <CardFooter>
-        {timeLeft && (
-          <PollMeta>
-            {timeLeft}
-          </PollMeta>
-        )}
+        {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {/* ADD "GO TO POLL" / "EDIT POLL" button */}
       </CardFooter>

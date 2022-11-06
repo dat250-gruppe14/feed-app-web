@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import {
   Navigate,
   Route,
@@ -11,12 +11,24 @@ import { EditPollPage } from 'src/pages/EditPollPage/EditPollPage';
 import { PollsPage } from 'src/pages/PollsPage/PollsPage';
 import { ProfilePage } from 'src/pages/ProfilePage/ProfilePage';
 import { VotePage } from 'src/pages/VotePage/VotePage';
+import { useGetAuth, useCheckTokens } from 'src/hooks/auth.hooks';
+import { Spinner } from 'components/Spinner';
 import { GenericNotFound } from './paths';
 import { baseRoutes } from './baseRoutes';
 
 export const Routes = () => {
+  const user = useGetAuth();
+  const checkTokens = useCheckTokens();
+
+  useEffect(() => {
+    if (!user?.data) {
+      checkTokens.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<Spinner />}>
       <RoutesReactRouterDom>
         <Route path={baseRoutes.index} element={<PollsPage />} />
         <Route path={baseRoutes.createPoll} element={<CreatePollPage />} />
