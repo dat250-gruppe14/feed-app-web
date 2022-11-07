@@ -1,7 +1,8 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { getUser, getUsers } from 'src/services/user.service';
-import { User } from 'src/types/types';
+import { getUser, getUsers, updateUser } from 'src/services/user.service';
+import { UpdateUserRequest, User } from 'src/types/types';
+import { useGetAuth } from './auth.hooks';
 import { FETCH_DEFAULT_OPTIONS } from './config';
 
 export const useGetUsers = () => {
@@ -22,4 +23,26 @@ export const useGetUser = (id: string) => {
     initialDataUpdatedAt: () =>
       queryClient.getQueryState(['users'])?.dataUpdatedAt,
   });
+};
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+  const currentUser = useGetAuth();
+
+  return useMutation(
+    (request: UpdateUserRequest) =>
+      updateUser(currentUser?.data?.user.id ?? '', request),
+    {
+      onSuccess: (user: User) => {
+        queryClient.setQueryData(['loggedInUser'], {
+          ...currentUser?.data,
+          user,
+        });
+        console.log('updated', user);
+      },
+      onError: (err: any) => {
+        // queryClient.setQueryData(['authError'], err.response.data.message);
+      },
+    },
+  );
 };
