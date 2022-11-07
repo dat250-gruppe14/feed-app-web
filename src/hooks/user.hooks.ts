@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { notify } from 'src/components/store/notification';
 import { getUser, getUsers, updateUser } from 'src/services/user.service';
 import { UpdateUserRequest, User } from 'src/types/types';
 import { useGetAuth } from './auth.hooks';
@@ -38,10 +39,11 @@ export const useUpdateUser = () => {
           ...currentUser?.data,
           user,
         });
-        console.log('updated', user);
+        notify('✅ Updated profile');
       },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (err: any) => {
-        // queryClient.setQueryData(['authError'], err.response.data.message);
+        notify(`❌ ${err.response.data.message}`);
       },
     },
   );
