@@ -38,10 +38,6 @@ export const RegisterPage: FC = () => {
     return <Navigate to={baseRoutes.index} />;
   }
 
-  if (loggedInUser?.status === 'loading') {
-    return <p>Spinner</p>;
-  }
-
   if (!loggedInUser?.data)
     return (
       <>
@@ -58,6 +54,7 @@ export const RegisterPage: FC = () => {
               onChange={e => setName(e.target.value)}
               required
               value={name}
+              minLength={3}
             />
           </InputAndLabelWrapper>
           <InputAndLabelWrapper>
