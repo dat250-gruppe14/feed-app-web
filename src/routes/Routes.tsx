@@ -15,6 +15,7 @@ import { Spinner } from 'components/Spinner';
 import { GenericNotFound } from './paths';
 import { baseRoutes } from './baseRoutes';
 import { UserLoader } from './components/UserLoader';
+import { PrivateRoute } from './components/PrivateRoute';
 
 export const Routes = () => {
   return (
@@ -22,10 +23,14 @@ export const Routes = () => {
       <RoutesReactRouterDom>
         <Route element={<UserLoader />}>
           <Route path={baseRoutes.index} element={<PollsPage />} />
-          <Route path={baseRoutes.createPoll} element={<CreatePollPage />} />
-          <Route path={baseRoutes.editPoll} element={<EditPollPage />} />
           <Route path={baseRoutes.pollById} element={<VotePage />} />
-          <Route path={baseRoutes.profile} element={<ProfilePage />} />
+
+          <Route element={<PrivateRoute />}>
+            <Route path={baseRoutes.createPoll} element={<CreatePollPage />} />
+            <Route path={baseRoutes.editPoll} element={<EditPollPage />} />
+            <Route path={baseRoutes.profile} element={<ProfilePage />} />
+          </Route>
+
           <Route path={baseRoutes.login} element={<LoginPage />} />
           <Route path={baseRoutes.register} element={<RegisterPage />} />
           <Route path="*" element={<Navigate to="/404" />} />

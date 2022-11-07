@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { CenteredContent } from 'src/components/CenteredContent';
 import { Input } from 'src/components/Input';
 import { Spinner } from 'src/components/Spinner';
-import { useCheckTokens, useGetAuth, useLogin } from 'src/hooks/auth.hooks';
+import { useGetAuth, useLogin } from 'src/hooks/auth.hooks';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import {
   AuthSecondaryButton,
@@ -32,6 +32,10 @@ export const LoginPage: FC = () => {
     });
     setPassword('');
   };
+
+  if (login.isLoading) {
+    return <Spinner />;
+  }
 
   if (loggedInUser?.data) {
     return <Navigate to={baseRoutes.index} />;
