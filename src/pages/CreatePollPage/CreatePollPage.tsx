@@ -1,11 +1,8 @@
 import { rem } from 'polished';
 import React, { FC, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import { Button } from 'src/components/Button';
 import { Input } from 'src/components/Input';
-import { useGetAuth } from 'src/hooks/auth.hooks';
 import { useCreatePoll } from 'src/hooks/poll.hooks';
-import { baseRoutes } from 'src/routes/baseRoutes';
 import { colors } from 'src/styles/colors';
 import { PollAccess } from 'src/types/types';
 import styled from 'styled-components';
@@ -28,7 +25,6 @@ const Checkbox = styled.input`
 `;
 
 export const CreatePollPage: FC = () => {
-  const loggedInUser = useGetAuth();
   const { mutate } = useCreatePoll();
   const now = new Date();
 
@@ -50,18 +46,6 @@ export const CreatePollPage: FC = () => {
       endTime,
     });
   };
-
-  console.log(loggedInUser);
-  console.log(loggedInUser?.data);
-
-  if (!loggedInUser?.data) {
-    // Todo change to NotFound
-    return <Navigate to={baseRoutes.index} />;
-  }
-
-  if (loggedInUser?.status === 'loading') {
-    return <p>Spinner</p>;
-  }
 
   return (
     <>
