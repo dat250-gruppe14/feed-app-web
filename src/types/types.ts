@@ -103,3 +103,9 @@ export interface UserWithToken {
   user: User;
   token: string;
 }
+
+export interface UpdateUserRequest {
+  name: string;
+  email: string;
+  role?: AccountRole;
+}

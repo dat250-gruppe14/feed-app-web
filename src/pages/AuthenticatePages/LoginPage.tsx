@@ -1,7 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { CenteredContent } from 'src/components/CenteredContent';
 import { Input } from 'src/components/Input';
+import { Spinner } from 'src/components/Spinner';
 import { useGetAuth, useLogin } from 'src/hooks/auth.hooks';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import {
@@ -32,8 +33,8 @@ export const LoginPage: FC = () => {
     setPassword('');
   };
 
-  if (loggedInUser && loggedInUser?.status !== 'success') {
-    return <p>Spinner</p>;
+  if (login.isLoading) {
+    return <Spinner />;
   }
 
   if (loggedInUser?.data) {

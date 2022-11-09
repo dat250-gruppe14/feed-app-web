@@ -1,7 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 import { rem } from 'polished';
 import styled from 'styled-components';
-import { useGetNotification, useSetNotification } from 'src/hooks/auth.hooks';
+import { colors } from 'src/styles/colors';
+import { notification, resetNotification } from './store/notification';
 
 const NotificationWrapper = styled.div`
   position: fixed;
@@ -11,15 +12,17 @@ const NotificationWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 0 ${rem(20)};
-  margin-top: ${rem(20)};
+  padding: ${rem(10)} ${rem(20)};
+  margin: ${rem(20)} ${rem(10)};
 
   border-radius: 22px;
 
-  background-color: black;
+  background-color: ${colors.backgroundSecondary};
   width: fit-content;
   min-width: 60px;
-  height: ${rem(40)};
+  height: fit-content;
+
+  text-align: center;
 
   transition: transform 0.5s, min-width 0.3s;
 
@@ -39,15 +42,14 @@ const NotificationStyle = styled.span`
 `;
 
 export const Notification: FC = () => {
-  const message = useGetNotification();
-  const setNofication = useSetNotification();
+  const message = notification.use();
   const [display, setDisplay] = useState(AlertStatuses.HIDE);
 
   useEffect(() => {
     if (message) {
       setDisplay(AlertStatuses.SHOW);
       setTimeout(() => {
-        setNofication(undefined);
+        resetNotification();
       }, 4000);
     } else {
       setDisplay(AlertStatuses.HIDE);

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryClient } from 'src/App';
+import { notify } from 'src/components/store/notification';
 import { login, refreshToken, register } from 'src/services/auth.service';
 
 import { LoginRequest, RegisterRequest, UserWithToken } from 'src/types/types';
@@ -12,10 +12,12 @@ export const useLogin = () => {
     onSuccess: (userWithToken: UserWithToken) => {
       queryClient.setQueryData(['loggedInUser'], userWithToken);
       setToken(userWithToken.token);
+      notify('✅ Signed in!');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       queryClient.setQueryData(['authError'], err.response.data.message);
+      notify(`❌ ${err.response.data.message}`);
     },
   });
 };
@@ -27,24 +29,18 @@ export const useRegister = () => {
     onSuccess: (userWithToken: UserWithToken) => {
       queryClient.setQueryData(['loggedInUser'], userWithToken);
       setToken(userWithToken.token);
+      notify('✅ Registered new user!');
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       queryClient.setQueryData(['authError'], err.response.data.message);
+      notify(`❌ ${err.response.data.message}`);
     },
   });
 };
 
 export const useGetAuth = () => {
   return useQueryClient().getQueryState<UserWithToken>(['loggedInUser']);
-};
-
-export const useGetNotification = () => {
-  return useQueryClient().getQueryState<string>(['notification']);
-};
-
-export const useSetNotification = () => {
-  return (message: string | undefined) =>
-    queryClient.setQueryData(['notification'], message);
 };
 
 export const useLogOut = () => {
@@ -63,10 +59,6 @@ export const useCheckTokens = () => {
     onSuccess: (userWithToken: UserWithToken) => {
       queryClient.setQueryData(['loggedInUser'], userWithToken);
       setToken(userWithToken.token);
-      console.log('refreshed', userWithToken);
-    },
-    onError: (err: any) => {
-      console.log('refresh error', err);
     },
   });
 };

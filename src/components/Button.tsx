@@ -56,6 +56,10 @@ export const Button: FC<props> = ({
   );
 };
 
+export const WideButton = styled(Button)`
+  width: ${rem(280)};
+`;
+
 /**
  * <Button onClick = {() => console.log('Button clicked')} 
             children = 'Click&#8594;' 

@@ -2,6 +2,7 @@ import React, { FC, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { CenteredContent } from 'src/components/CenteredContent';
 import { Input } from 'src/components/Input';
+import { Spinner } from 'src/components/Spinner';
 import { useGetAuth, useRegister } from 'src/hooks/auth.hooks';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import {
@@ -34,12 +35,12 @@ export const RegisterPage: FC = () => {
     setPassword('');
   };
 
-  if (loggedInUser?.data) {
-    return <Navigate to={baseRoutes.index} />;
+  if (register.isLoading) {
+    return <Spinner />;
   }
 
-  if (loggedInUser?.status === 'loading') {
-    return <p>Spinner</p>;
+  if (loggedInUser?.data) {
+    return <Navigate to={baseRoutes.index} />;
   }
 
   if (!loggedInUser?.data)
@@ -58,6 +59,7 @@ export const RegisterPage: FC = () => {
               onChange={e => setName(e.target.value)}
               required
               value={name}
+              minLength={3}
             />
           </InputAndLabelWrapper>
           <InputAndLabelWrapper>
