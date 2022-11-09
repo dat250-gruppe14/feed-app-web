@@ -5,16 +5,30 @@ import { rem } from 'polished';
 import { Card } from 'src/components/Card';
 import { useGetPolls } from 'src/hooks/poll.hooks';
 import { Input } from 'src/components/Input';
-import { AccountRole, Poll, PollAccess } from 'src/types/types';
 import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import { Spinner } from 'src/components/Spinner';
 import { useGetAuth } from 'src/hooks/auth.hooks';
+import { filterOwnedPolls } from 'src/utils/utils';
+import { Button } from 'src/components/Button';
+import { colors } from 'src/styles/colors';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'src/components/svg/ArrowRight';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
   font-weight: 700;
+`;
+
+const CreatePollButton = styled(Button)`
+  background: ${colors.blueish};
+`;
+
+const HeadingAndButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 const InputWrapper = styled.div`
@@ -22,83 +36,15 @@ const InputWrapper = styled.div`
 `;
 
 export const PollsPage: FC = () => {
-  const now = new Date();
+  const navigate = useNavigate();
   const polls = useGetPolls();
-
   const loggedInUser = useGetAuth();
 
   if (!polls.isSuccess) {
     return <Spinner />;
   }
 
-  const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
-  const ongoingPolls = polls.data.filter(
-    poll => !poll.endTime || poll.endTime > now,
-  );
-
-  // const mockOwned: Poll[] = [
-  //   {
-  //     id: '1',
-  //     pincode: '123321',
-  //     question: 'Ananas på pizza?',
-  //     optionOne: 'Ja',
-  //     optionTwo: 'Nei',
-  //     counts: {
-  //       optionOneCount: 10,
-  //       optionTwoCount: 20,
-  //     },
-  //     owner: {
-  //       id: '1',
-  //       name: 'Lars',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     endTime: new Date(now.setDate(now.getDate() + 2)),
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  // ];
-
-  // const mockOngoing: Poll[] = [
-  //   {
-  //     id: '1',
-  //     pincode: '123456',
-  //     question: 'Tomaito eller tomato?',
-  //     optionOne: 'Tomaito',
-  //     optionTwo: 'Tomato',
-  //     counts: {
-  //       optionOneCount: 23,
-  //       optionTwoCount: 19,
-  //     },
-  //     owner: {
-  //       id: '2',
-  //       name: 'Tim',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  //   {
-  //     id: '3',
-  //     pincode: '123123',
-  //     question: 'Sommer eller vinter?',
-  //     optionOne: 'Sommer :)',
-  //     optionTwo: 'Vinter! *brr*',
-  //     counts: {
-  //       optionOneCount: 16,
-  //       optionTwoCount: 16,
-  //     },
-  //     owner: {
-  //       id: '',
-  //       name: '',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  // ];
+  const [ownedPolls, otherPolls] = filterOwnedPolls(polls.data, loggedInUser!.data!.user.id);
 
   return (
     <>
@@ -117,7 +63,15 @@ export const PollsPage: FC = () => {
           </InputWrapper>
         </>
       ) : null}
-      <Heading>My polls</Heading>
+      <HeadingAndButtonWrapper>
+        <Heading>My polls</Heading>
+        <CreatePollButton
+          onClick={() => navigate(baseRoutes.createPoll)}
+        >
+          New poll
+          <ArrowRight />
+        </CreatePollButton>
+      </HeadingAndButtonWrapper>
       {ownedPolls.map(poll => {
         return (
           <Card
@@ -130,7 +84,7 @@ export const PollsPage: FC = () => {
         );
       })}
       <Heading>Ongoing polls</Heading>
-      {polls.data.map(poll => {
+      {otherPolls.map(poll => {
         return (
           <Card
             title={poll.question}

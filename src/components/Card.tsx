@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { getRemainingTime, getRemainingPollDays } from 'src/utils/utils';
+import { getRemainingTime } from 'src/utils/utils';
 import { PollOption, PollCounts } from 'src/types/types';
 import { useVotePoll } from 'src/hooks/poll.hooks';
 import { Progress } from './Progress';
 import { Button } from './Button';
+import { ArrowRight } from './svg/ArrowRight';
 
 const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -33,15 +34,6 @@ const OptionWrapper = styled.div`
   flex-direction: column;
   margin-bottom: ${rem(12)};
 `;
-const ProgressWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-
-  div:first-child {
-    margin-right: 20px;
-  }
-`;
 
 const OptionDescription = styled.p`
   font-size: ${rem(14)};
@@ -52,7 +44,7 @@ const CardFooter = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: ${rem(20)};
+  padding-top: ${rem(20)};
 `;
 
 const PollMeta = styled.div`
@@ -75,8 +67,9 @@ interface CardProps {
   counts: PollCounts;
   endTime?: Date;
   owner?: string;
-  showPollMeta?: boolean;
   userAnswer?: PollOption;
+  isOwner?: boolean;
+  onClick?: () => void;
 }
 
 export const Card: FC<CardProps> = ({
@@ -88,14 +81,14 @@ export const Card: FC<CardProps> = ({
   endTime,
   owner,
   userAnswer,
-  showPollMeta = false,
+  isOwner,
+  onClick,
 }) => {
   const timeLeft = getRemainingTime(endTime);
   const canVote = userAnswer === undefined;
-  console.log({ canVote, userAnswer });
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
-  const pollTimeRemaining = getRemainingPollDays(endTime);
+  const showNavigationButton = isOwner && onClick;
 
   return (
     <CardWrapper>
@@ -145,7 +138,14 @@ export const Card: FC<CardProps> = ({
       <CardFooter>
         {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
-        {/* ADD "GO TO POLL" / "EDIT POLL" button */}
+        {showNavigationButton && (
+          <Button
+            onClick={onClick}
+          >
+            {isOwner ? 'Edit' : 'Vote'}
+            <ArrowRight />
+          </Button>
+        )}
       </CardFooter>
     </CardWrapper>
   );

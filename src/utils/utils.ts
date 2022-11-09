@@ -1,6 +1,7 @@
 import { pathToRegexp } from 'path-to-regexp';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import jwtDecode from 'jwt-decode';
+import { Poll } from 'src/types/types';
 
 export const LOGIN_HEADER = 'FEEDAPP';
 export const mapRouteToHeaderTitle = (path: string) => {
@@ -90,3 +91,14 @@ export const deleteTokens = () => {
   localStorage.removeItem('jwtToken');
   document.cookie = '';
 };
+
+export const filterOwnedPolls = (polls: Poll[], userId: string | undefined): [Poll[], Poll[]] => {
+  const ownedPolls: Poll[] = [];
+  const otherPolls: Poll[] = [];
+
+  polls.forEach(poll => {
+    (poll.owner.id === userId ? ownedPolls : otherPolls).push(poll);
+  });
+
+  return [ownedPolls, otherPolls];
+} 

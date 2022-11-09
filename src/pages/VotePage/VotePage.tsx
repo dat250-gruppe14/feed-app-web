@@ -9,6 +9,8 @@ import { AccountRole, Poll, PollAccess } from 'src/types/types';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import { CopyToClipboardButton } from 'src/components/CopyButton';
 import { useGetPolls } from 'src/hooks/poll.hooks';
+import { Alert } from 'src/components/Alert';
+import { AlertTriangle } from 'src/components/svg/AlertTriangle';
 
 const BackButton = styled(Link)`
   display: flex;
@@ -28,6 +30,7 @@ const PollMock: Poll = {
   owner: {
     id: '123',
     name: 'Testbert',
+    email: 'email@email.com',
     role: AccountRole.User,
   },
   counts: {
@@ -45,10 +48,16 @@ const PollMock: Poll = {
 export const VotePage: FC = () => {
   const poll = PollMock;
   const polls = useGetPolls();
+  const now = new Date();
 
   if (!polls.isSuccess) {
     return <>loading...</>;
   }
+
+  const hasPollStarted = poll.startTime > now;
+  const hasPollExpired = poll.endTime && poll.endTime < now;
+
+  const showPollAlert = !hasPollStarted || hasPollExpired;
 
   return (
     <>
@@ -58,6 +67,12 @@ export const VotePage: FC = () => {
         </ArrowWrapper>
         Back to polls
       </BackButton>
+      {showPollAlert ? (
+        <Alert 
+          icon={<AlertTriangle />}
+          description={`This poll has ${hasPollExpired ? 'expired' : 'not started'}!`}
+        />
+      ) : null}
       <Card
         title={poll.question}
         counts={poll.counts}
@@ -66,7 +81,6 @@ export const VotePage: FC = () => {
         owner={poll.owner.name}
         userAnswer={poll.userAnswer}
         endTime={poll.endTime}
-        showPollMeta
         pincode={poll.pincode}
       />
       <CopyToClipboardButton label="Pincode" value={poll.pincode} />
