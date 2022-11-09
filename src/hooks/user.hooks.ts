@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { notify } from 'src/components/store/notification';
+import { notify } from 'src/store/notification';
 import { getUser, getUsers, updateUser } from 'src/services/user.service';
 import { UpdateUserRequest, User } from 'src/types/types';
 import { useGetAuth } from './auth.hooks';

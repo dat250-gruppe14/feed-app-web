@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { rem } from 'polished';
 import styled from 'styled-components';
 import { colors } from 'src/styles/colors';
-import { notification, resetNotification } from './store/notification';
+import { notification, resetNotification } from '../store/notification';
 
 const NotificationWrapper = styled.div`
   position: fixed;
