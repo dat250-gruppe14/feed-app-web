@@ -14,7 +14,7 @@ import { filterOwnedPolls } from 'src/utils/utils';
 import { Button } from 'src/components/Button';
 import { colors } from 'src/styles/colors';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'src/components/svg/ArrowRight';
+import { Plus } from 'src/components/svg/Plus';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
@@ -35,6 +35,11 @@ const InputWrapper = styled.div`
   margin: ${rem(20)} 0;
 `;
 
+const IconWrapper = styled.div`
+  margin-left: ${rem(8)};
+  width: ${rem(12)};
+`;
+
 export const PollsPage: FC = () => {
   const navigate = useNavigate();
   const polls = useGetPolls();
@@ -44,7 +49,10 @@ export const PollsPage: FC = () => {
     return <Spinner />;
   }
 
-  const [ownedPolls, otherPolls] = filterOwnedPolls(polls.data, loggedInUser!.data!.user.id);
+  const [ownedPolls, otherPolls] = filterOwnedPolls(
+    polls.data,
+    loggedInUser!.data!.user.id,
+  );
 
   return (
     <>
@@ -65,11 +73,11 @@ export const PollsPage: FC = () => {
       ) : null}
       <HeadingAndButtonWrapper>
         <Heading>My polls</Heading>
-        <CreatePollButton
-          onClick={() => navigate(baseRoutes.createPoll)}
-        >
+        <CreatePollButton onClick={() => navigate(baseRoutes.createPoll)}>
           New poll
-          <ArrowRight />
+          <IconWrapper>
+            <Plus />
+          </IconWrapper>
         </CreatePollButton>
       </HeadingAndButtonWrapper>
       {ownedPolls.map(poll => {
@@ -80,10 +88,13 @@ export const PollsPage: FC = () => {
             optionOne={poll.optionOne}
             optionTwo={poll.optionTwo}
             counts={poll.counts}
+            isOwner
+            onClick={() => navigate(`poll/${poll.pincode}/edit`)}
           />
         );
       })}
-      <Heading>Ongoing polls</Heading>
+
+      {otherPolls.length > 0 && <Heading>Ongoing polls</Heading>}
       {otherPolls.map(poll => {
         return (
           <Card

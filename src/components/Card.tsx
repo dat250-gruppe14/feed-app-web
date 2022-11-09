@@ -40,6 +40,15 @@ const OptionDescription = styled.p`
   font-weight: 700;
 `;
 
+const ProgressWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  div:first-child {
+    margin-right: 20px;
+  }
+`;
+
 const CardFooter = styled.div`
   display: flex;
   flex-direction: row;
@@ -57,6 +66,14 @@ const VoteButton = styled(Button)`
   align-self: flex-end;
   background: ${colors.blueish};
   justify-self: flex-end;
+`;
+
+const IconWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  margin-left: ${rem(8)};
+  justify-content: center;
+  width: ${rem(12)};
 `;
 
 interface CardProps {
@@ -88,7 +105,7 @@ export const Card: FC<CardProps> = ({
   const canVote = userAnswer === undefined;
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
-  const showNavigationButton = isOwner && onClick;
+  const showNavigationButton = onClick !== undefined;
 
   return (
     <CardWrapper>
@@ -96,54 +113,58 @@ export const Card: FC<CardProps> = ({
       <>
         <OptionWrapper>
           <OptionDescription>{optionOne}</OptionDescription>
-          <Progress
-            background={colors.green}
-            value={counts.optionOneCount}
-            total={votesCount}
-          />
-          {canVote && (
-            <VoteButton
-              onClick={() =>
-                mutate({
-                  option: PollOption.One,
-                  pollId: pincode,
-                })
-              }
-            >
-              Vote
-            </VoteButton>
-          )}
+          <ProgressWrapper>
+            <Progress
+              background={colors.green}
+              value={counts.optionOneCount}
+              total={votesCount}
+            />
+            {canVote && (
+              <VoteButton
+                onClick={() =>
+                  mutate({
+                    option: PollOption.One,
+                    pollId: pincode,
+                  })
+                }
+              >
+                Vote
+              </VoteButton>
+            )}
+          </ProgressWrapper>
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
-          <Progress
-            background={colors.red}
-            value={counts.optionTwoCount}
-            total={votesCount}
-          />
-          {canVote && (
-            <VoteButton
-              onClick={() =>
-                mutate({
-                  option: PollOption.Two,
-                  pollId: pincode,
-                })
-              }
-            >
-              Vote
-            </VoteButton>
-          )}
+          <ProgressWrapper>
+            <Progress
+              background={colors.red}
+              value={counts.optionTwoCount}
+              total={votesCount}
+            />
+            {canVote && (
+              <VoteButton
+                onClick={() =>
+                  mutate({
+                    option: PollOption.Two,
+                    pollId: pincode,
+                  })
+                }
+              >
+                Vote
+              </VoteButton>
+            )}
+          </ProgressWrapper>
         </OptionWrapper>
       </>
       <CardFooter>
         {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {showNavigationButton && (
-          <Button
-            onClick={onClick}
-          >
+          <Button onClick={onClick}>
             {isOwner ? 'Edit' : 'Vote'}
-            <ArrowRight />
+            <IconWrapper>
+              <ArrowRight />
+            </IconWrapper>
           </Button>
         )}
       </CardFooter>
