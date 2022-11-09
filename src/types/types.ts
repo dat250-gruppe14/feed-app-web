@@ -63,8 +63,9 @@ export interface PollCreateRequest {
   optionOne: string;
   optionTwo: string;
   access: PollAccess;
-  startTime: string;
-  endTime?: string;
+  pincode?: string;
+  startTime: Date;
+  endTime?: Date;
 }
 
 interface PatchOperation {

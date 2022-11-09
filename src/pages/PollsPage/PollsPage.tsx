@@ -10,6 +10,7 @@ import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import { Spinner } from 'src/components/Spinner';
+import { useGetAuth } from 'src/hooks/auth.hooks';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
@@ -24,10 +25,7 @@ export const PollsPage: FC = () => {
   const now = new Date();
   const polls = useGetPolls();
 
-  // TODO: Use auth to get user
-  // const auth = useAuth(token);
-  // const user = auth.data !== null;
-  const user = false;
+  const loggedInUser = useGetAuth();
 
   if (!polls.isSuccess) {
     return <Spinner />;
@@ -104,17 +102,21 @@ export const PollsPage: FC = () => {
 
   return (
     <>
-      {!user ? (
+      {!loggedInUser ? (
         <Alert
           description="Log in to create and join private polls!"
           icon={<AlertCircle />}
           href={baseRoutes.login}
         />
       ) : null}
-      <Heading>Join poll by pincode</Heading>
-      <InputWrapper>
-        <Input type="number" placeholder="Enter pincode..." />
-      </InputWrapper>
+      {loggedInUser ? (
+        <>
+          <Heading>Join poll by pincode</Heading>
+          <InputWrapper>
+            <Input type="number" placeholder="Enter pincode..." />
+          </InputWrapper>
+        </>
+      ) : null}
       <Heading>My polls</Heading>
       {ownedPolls.map(poll => {
         return (
