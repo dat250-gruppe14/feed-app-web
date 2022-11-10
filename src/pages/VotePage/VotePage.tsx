@@ -7,6 +7,7 @@ import { useGetPoll } from 'src/hooks/poll.hooks';
 import { Alert } from 'src/components/Alert';
 import { AlertTriangle } from 'src/components/svg/AlertTriangle';
 import { BackButton } from 'src/components/BackButton';
+import { Spinner } from 'src/components/Spinner';
 
 export const VotePage: FC = () => {
   const params = useParams();
@@ -14,7 +15,7 @@ export const VotePage: FC = () => {
   const now = new Date();
 
   if (!pollWithStatus.isSuccess) {
-    return <>loading...</>;
+    return <Spinner />;
   }
 
   const poll = pollWithStatus.data;

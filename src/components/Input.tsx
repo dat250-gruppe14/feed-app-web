@@ -8,7 +8,7 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: row;
   background: ${colors.backgroundSecondary} !important;
-  border-radius: ${rem(10)};
+  border-radius: ${rem(20)};
 `;
 
 const StyledInput = styled.input`

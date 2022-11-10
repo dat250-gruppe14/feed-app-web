@@ -1,7 +1,7 @@
 import { rem } from 'polished';
 import React, { FC, useState } from 'react';
 import { BackButton } from 'src/components/BackButton';
-import { Button } from 'src/components/Button';
+import { Button, WideButton } from 'src/components/Button';
 import { Input } from 'src/components/Input';
 import { useCreatePoll } from 'src/hooks/poll.hooks';
 import { colors } from 'src/styles/colors';
@@ -111,7 +111,7 @@ export const CreatePollPage: FC = () => {
           />
         </CheckboxAndLabelWrapper>
         <ButtonsWrapper>
-          <Button type="submit">Save</Button>
+          <WideButton type="submit">Save</WideButton>
         </ButtonsWrapper>
       </form>
     </>

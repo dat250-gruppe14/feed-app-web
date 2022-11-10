@@ -17,12 +17,15 @@ const Bar = styled.div<{ percentage: number; background: string }>`
   background: ${({ background }) => background};
   border-radius: inherit;
   box-shadow: ${rem(4)} ${rem(0)} ${rem(10)} rgba(0, 0, 0, 0.25);
-  color: black;
+  color: ${colors.backgroundSecondary};
+  font-size: ${rem(16)};
   font-weight: 700;
   justify-content: flex-end;
-  max-width: ${({ percentage }) => percentage}%;
+  align-items: center;
+  width: ${({ percentage }) => percentage}%;
   min-width: fit-content;
-  padding: ${rem(4)} ${rem(12)} ${rem(4)} ${rem(4)};
+  padding: 0 ${rem(12)} 0 ${rem(12)};
+  height: ${rem(30)};
 `;
 
 interface ProgressBarProps {
