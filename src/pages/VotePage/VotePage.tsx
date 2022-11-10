@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Card } from 'src/components/Card';
 import { CopyToClipboardButton } from 'src/components/CopyButton';
@@ -8,11 +8,18 @@ import { Alert } from 'src/components/Alert';
 import { AlertTriangle } from 'src/components/svg/AlertTriangle';
 import { BackButton } from 'src/components/BackButton';
 import { Spinner } from 'src/components/Spinner';
+import { baseRoutes } from 'src/routes/baseRoutes';
 
 export const VotePage: FC = () => {
   const params = useParams();
   const pollWithStatus = useGetPoll(params.id ?? '');
   const now = new Date();
+  const navigate = useNavigate();
+
+  if (pollWithStatus.isError) {
+    navigate(baseRoutes.index);
+    return <p>Error fetching poll</p>;
+  }
 
   if (!pollWithStatus.isSuccess) {
     return <Spinner />;

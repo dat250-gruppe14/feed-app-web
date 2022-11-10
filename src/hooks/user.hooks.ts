@@ -3,6 +3,8 @@ import { AxiosError } from 'axios';
 import { notify } from 'src/store/notification';
 import { getUser, getUsers, updateUser } from 'src/services/user.service';
 import { UpdateUserRequest, User } from 'src/types/types';
+import { useNavigate } from 'react-router-dom';
+import { baseRoutes } from 'src/routes/baseRoutes';
 import { useGetAuth } from './auth.hooks';
 import { FETCH_DEFAULT_OPTIONS } from './config';
 
@@ -29,6 +31,7 @@ export const useGetUser = (id: string) => {
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   const currentUser = useGetAuth();
+  const navigate = useNavigate();
 
   return useMutation(
     (request: UpdateUserRequest) =>
@@ -40,6 +43,7 @@ export const useUpdateUser = () => {
           user,
         });
         notify('✅ Updated profile');
+        navigate(baseRoutes.index);
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onError: (err: any) => {

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
@@ -59,7 +59,12 @@ const PollMeta = styled.div`
   padding: ${rem(4)} ${rem(14)};
 `;
 
-const VoteButton = styled(Button)`
+type VoteButtonProps = {
+  disabled?: boolean;
+  hidden?: boolean;
+};
+
+const VoteButton = styled(Button)<VoteButtonProps>`
   align-self: flex-end;
   background: ${colors.blueish};
   justify-self: flex-end;
@@ -67,6 +72,19 @@ const VoteButton = styled(Button)`
   height: ${rem(30)};
   font-size: ${rem(16)};
   padding: ${rem(14)};
+
+  ${props =>
+    props.disabled &&
+    css`
+      background: ${colors.green};
+      pointer-events: none;
+    `}
+
+  ${props =>
+    props.hidden &&
+    css`
+      visibility: hidden;
+    `}
 `;
 
 const IconWrapper = styled.div`
@@ -111,8 +129,9 @@ export const Card: FC<CardProps> = ({
   showVoteButton = false,
 }) => {
   const timeLeft = getRemainingTime(endTime);
-  const canVote = !userAnswer && showVoteButton;
-  const { mutate } = useVotePoll();
+  const canVote =
+    (userAnswer === undefined || userAnswer === null) && showVoteButton;
+  const vote = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const showNavigationButton = onClick !== undefined;
 
@@ -131,13 +150,18 @@ export const Card: FC<CardProps> = ({
             {canVote && (
               <VoteButton
                 onClick={() =>
-                  mutate({
-                    option: PollOption.One,
-                    pollId: pincode,
+                  vote.mutate({
+                    optionSelected: PollOption.One,
+                    pollPincode: pincode,
                   })
                 }
               >
                 Vote
+              </VoteButton>
+            )}
+            {showVoteButton && userAnswer !== null && (
+              <VoteButton hidden={userAnswer === PollOption.Two} disabled>
+                Voted
               </VoteButton>
             )}
           </ProgressWrapper>
@@ -153,13 +177,18 @@ export const Card: FC<CardProps> = ({
             {canVote && (
               <VoteButton
                 onClick={() =>
-                  mutate({
-                    option: PollOption.Two,
-                    pollId: pincode,
+                  vote.mutate({
+                    optionSelected: PollOption.Two,
+                    pollPincode: pincode,
                   })
                 }
               >
                 Vote
+              </VoteButton>
+            )}
+            {showVoteButton && userAnswer !== null && (
+              <VoteButton hidden={userAnswer === PollOption.One} disabled>
+                Voted
               </VoteButton>
             )}
           </ProgressWrapper>

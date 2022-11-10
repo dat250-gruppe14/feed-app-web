@@ -16,9 +16,9 @@ import {
   Poll,
   PollCreateRequest,
   PollPatchOperation,
-  Vote,
   VoteRequest,
 } from 'src/types/types';
+import { addLocalVote } from 'src/utils/utils';
 import { FETCH_DEFAULT_OPTIONS } from './config';
 
 export const useGetPolls = () => {
@@ -27,6 +27,20 @@ export const useGetPolls = () => {
     () => getPolls(),
     FETCH_DEFAULT_OPTIONS,
   );
+};
+
+export const useGetPollWithMutate = () => {
+  const navigate = useNavigate();
+
+  return useMutation((id: string) => getPoll(id), {
+    onSuccess: (poll: Poll) => {
+      navigate(`poll/${poll.pincode}`);
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
+    },
+  });
 };
 
 export const useGetPoll = (id: string) => {
@@ -51,8 +65,11 @@ export const useCreatePoll = () => {
 
   return useMutation((request: PollCreateRequest) => createPoll(request), {
     onSuccess: (newPoll: Poll) => {
-      queryClient.setQueryData(['polls', newPoll.id], newPoll);
+      const prevPolls: Poll[] | undefined = queryClient.getQueryData(['polls']);
+
+      queryClient.setQueryData(['polls'], [...(prevPolls ?? []), newPoll]);
       navigate(baseRoutes.index);
+      notify('✅ Poll created!');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -66,7 +83,13 @@ export const usePatchPoll = () => {
 
   return useMutation((request: PollPatchOperation[]) => patchPoll(request), {
     onSuccess: (newPoll: Poll) => {
-      queryClient.setQueryData(['polls', newPoll.id], newPoll);
+      const prevPolls: Poll[] | undefined = queryClient.getQueryData(['polls']);
+
+      queryClient.setQueryData(
+        ['polls'],
+        [...(prevPolls?.filter(poll => poll.id !== newPoll.id) ?? []), newPoll],
+      );
+      notify('✅ Poll was updated!');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -81,9 +104,14 @@ export const useDeletePoll = () => {
 
   return useMutation((id: string) => deletePoll(id), {
     onSuccess: (oldPoll: Poll) => {
-      queryClient.invalidateQueries(['polls']);
-      queryClient.invalidateQueries(['polls', oldPoll.id]);
+      const prevPolls: Poll[] | undefined = queryClient.getQueryData(['polls']);
+
+      queryClient.setQueryData(
+        ['polls'],
+        [...(prevPolls?.filter(poll => poll.id !== oldPoll.id) ?? [])],
+      );
       navigate(baseRoutes.index);
+      notify('✅ Poll deleted!');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -94,12 +122,25 @@ export const useDeletePoll = () => {
 
 export const useVotePoll = () => {
   const queryClient = useQueryClient();
+  const mutatePoll = useGetPollWithMutate();
 
   return useMutation(
-    (request: VoteRequest) => votePoll(request.pollId, request),
+    (request: VoteRequest) => votePoll(request.pollPincode, request),
     {
-      onSuccess: (newVote: Vote) => {
-        queryClient.invalidateQueries(['polls', newVote.pollId]);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onSuccess: (updatedPoll: Poll, request) => {
+        // queryClient.invalidateQueries(['polls', { id: updatedPoll.id }]);
+        queryClient.invalidateQueries(['polls']);
+        // Litt igjen her
+        addLocalVote({
+          pincode: updatedPoll.pincode,
+          optionSelected: request.optionSelected,
+        });
+        notify('✅ Your vote is saved!');
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (err: any) => {
+        notify(`❌ ${err.response.data.message}`);
       },
     },
   );

@@ -22,10 +22,12 @@ const Bar = styled.div<{ percentage: number; background: string }>`
   font-weight: 700;
   justify-content: flex-end;
   align-items: center;
-  width: ${({ percentage }) => percentage}%;
+  max-width: ${({ percentage }) => percentage}%;
   min-width: fit-content;
   padding: 0 ${rem(12)} 0 ${rem(12)};
   height: ${rem(30)};
+
+  transition: max-width 0.2s;
 `;
 
 interface ProgressBarProps {

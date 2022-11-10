@@ -18,6 +18,7 @@ export const useLogin = () => {
       setToken(userWithToken.token);
       setUserStatus('success');
       notify('✅ Signed in!');
+      queryClient.invalidateQueries(['polls']);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -40,6 +41,7 @@ export const useRegister = () => {
       setToken(userWithToken.token);
       setUserStatus('success');
       notify('✅ Registered new user!');
+      queryClient.invalidateQueries(['polls']);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
@@ -74,6 +76,7 @@ export const useCheckTokens = () => {
       queryClient.setQueryData(['loggedInUser'], userWithToken);
       setToken(userWithToken.token);
       setUserStatus('success');
+      queryClient.invalidateQueries(['polls']);
     },
     onError: () => {
       setUserStatus('error');

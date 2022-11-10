@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BackButton } from 'src/components/BackButton';
 import { Button, WideButton } from 'src/components/Button';
+import { CopyToClipboardButton } from 'src/components/CopyButton';
 import { Input } from 'src/components/Input';
 import { useDeletePoll, usePatchPoll } from 'src/hooks/poll.hooks';
 import { colors } from 'src/styles/colors';
@@ -67,6 +68,7 @@ export const EditPollPage: FC = () => {
   return (
     <>
       <BackButton />
+      <CopyToClipboardButton label="Pincode" value={params.id ?? ''} />
       <form onSubmit={handleSubmit}>
         <InputAndLabelWrapper>
           <Label htmlFor="endTime">End time:</Label>
