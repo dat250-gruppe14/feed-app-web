@@ -9,7 +9,7 @@ const ProgressBarWrapper = styled.div`
   background: ${colors.backgroundTertiary};
   border-radius: ${rem(20)};
   margin-top: ${rem(4)};
-	width: 100%;
+  width: 100%;
 `;
 
 const Bar = styled.div<{ percentage: number; background: string }>`

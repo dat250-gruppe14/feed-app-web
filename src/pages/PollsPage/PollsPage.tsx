@@ -1,121 +1,99 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { Card } from 'src/components/Card';
-import { useGetPolls } from 'src/hooks/poll.hooks';
+import { useGetPoll, useGetPolls } from 'src/hooks/poll.hooks';
 import { Input } from 'src/components/Input';
-import { AccountRole, Poll, PollAccess } from 'src/types/types';
 import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import { Spinner } from 'src/components/Spinner';
+import { useGetAuth } from 'src/hooks/auth.hooks';
+import { filterOwnedPolls } from 'src/utils/utils';
+import { Button } from 'src/components/Button';
+import { colors } from 'src/styles/colors';
+import { useNavigate } from 'react-router-dom';
+import { Plus } from 'src/components/svg/Plus';
 
 const Heading = styled.div`
   font-size: ${rem(24)};
   font-weight: 700;
 `;
 
-const InputWrapper = styled.div`
+const CreatePollButton = styled(Button)`
+  background: ${colors.blueish};
+`;
+
+const HeadingAndButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const InputWrapper = styled.form`
   margin: ${rem(20)} 0;
 `;
 
-export const PollsPage: FC = () => {
-  const now = new Date();
-  const polls = useGetPolls();
+const IconWrapper = styled.div`
+  margin-left: ${rem(8)};
+  width: ${rem(12)};
+`;
 
-  // TODO: Use auth to get user
-  // const auth = useAuth(token);
-  // const user = auth.data !== null;
-  const user = false;
+export const PollsPage: FC = () => {
+  const navigate = useNavigate();
+  const polls = useGetPolls();
+  const [pincode, setPincode] = useState<string>('');
+  const loggedInUser = useGetAuth();
+  const poll = useGetPoll(pincode);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (poll.data) {
+      navigate(`poll/${pincode}`);
+    }
+  };
 
   if (!polls.isSuccess) {
     return <Spinner />;
   }
 
-  const ownedPolls = polls.data.filter(poll => poll.owner.id === '');
-  const ongoingPolls = polls.data.filter(
-    poll => !poll.endTime || poll.endTime > now,
+  const [ownedPolls, otherPolls] = filterOwnedPolls(
+    polls.data,
+    loggedInUser?.data?.user.id,
   );
-
-  // const mockOwned: Poll[] = [
-  //   {
-  //     id: '1',
-  //     pincode: '123321',
-  //     question: 'Ananas på pizza?',
-  //     optionOne: 'Ja',
-  //     optionTwo: 'Nei',
-  //     counts: {
-  //       optionOneCount: 10,
-  //       optionTwoCount: 20,
-  //     },
-  //     owner: {
-  //       id: '1',
-  //       name: 'Lars',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     endTime: new Date(now.setDate(now.getDate() + 2)),
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  // ];
-
-  // const mockOngoing: Poll[] = [
-  //   {
-  //     id: '1',
-  //     pincode: '123456',
-  //     question: 'Tomaito eller tomato?',
-  //     optionOne: 'Tomaito',
-  //     optionTwo: 'Tomato',
-  //     counts: {
-  //       optionOneCount: 23,
-  //       optionTwoCount: 19,
-  //     },
-  //     owner: {
-  //       id: '2',
-  //       name: 'Tim',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  //   {
-  //     id: '3',
-  //     pincode: '123123',
-  //     question: 'Sommer eller vinter?',
-  //     optionOne: 'Sommer :)',
-  //     optionTwo: 'Vinter! *brr*',
-  //     counts: {
-  //       optionOneCount: 16,
-  //       optionTwoCount: 16,
-  //     },
-  //     owner: {
-  //       id: '',
-  //       name: '',
-  //       role: AccountRole.User,
-  //     },
-  //     startTime: now,
-  //     createdTime: new Date(now.setDate(now.getDate() - 2)),
-  //     access: PollAccess.Public,
-  //   },
-  // ];
 
   return (
     <>
-      {!user ? (
+      {!loggedInUser ? (
         <Alert
           description="Log in to create and join private polls!"
           icon={<AlertCircle />}
           href={baseRoutes.login}
         />
       ) : null}
-      <Heading>Join poll by pincode</Heading>
-      <InputWrapper>
-        <Input type="number" placeholder="Enter pincode..." />
-      </InputWrapper>
-      <Heading>My polls</Heading>
+      {loggedInUser ? (
+        <>
+          <Heading>Join poll by pincode</Heading>
+          <InputWrapper onSubmit={handleSubmit}>
+            <Input
+              type="number"
+              placeholder="Enter pincode..."
+              onChange={e => setPincode(e.target.value)}
+              required
+            />
+          </InputWrapper>
+        </>
+      ) : null}
+      <HeadingAndButtonWrapper>
+        <Heading>My polls</Heading>
+        <CreatePollButton onClick={() => navigate(baseRoutes.createPoll)}>
+          New poll
+          <IconWrapper>
+            <Plus />
+          </IconWrapper>
+        </CreatePollButton>
+      </HeadingAndButtonWrapper>
       {ownedPolls.map(poll => {
         return (
           <Card
@@ -124,11 +102,14 @@ export const PollsPage: FC = () => {
             optionOne={poll.optionOne}
             optionTwo={poll.optionTwo}
             counts={poll.counts}
+            isOwner
+            onClick={() => navigate(`poll/${poll.pincode}/edit`)}
           />
         );
       })}
-      <Heading>Ongoing polls</Heading>
-      {polls.data.map(poll => {
+
+      {otherPolls.length > 0 && <Heading>Ongoing polls</Heading>}
+      {otherPolls.map(poll => {
         return (
           <Card
             title={poll.question}
@@ -136,6 +117,7 @@ export const PollsPage: FC = () => {
             optionOne={poll.optionOne}
             optionTwo={poll.optionTwo}
             counts={poll.counts}
+            onClick={() => navigate(`poll/${poll.pincode}`)}
           />
         );
       })}

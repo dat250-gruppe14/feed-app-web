@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { getRemainingTime, getRemainingPollDays } from 'src/utils/utils';
+import { getRemainingTime } from 'src/utils/utils';
 import { PollOption, PollCounts } from 'src/types/types';
 import { useVotePoll } from 'src/hooks/poll.hooks';
 import { Progress } from './Progress';
 import { Button } from './Button';
+import { ArrowRight } from './svg/ArrowRight';
 
 const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -33,26 +34,26 @@ const OptionWrapper = styled.div`
   flex-direction: column;
   margin-bottom: ${rem(12)};
 `;
-const ProgressWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-
-  div:first-child {
-    margin-right: 20px;
-  }
-`;
 
 const OptionDescription = styled.p`
   font-size: ${rem(14)};
   font-weight: 700;
 `;
 
-const CardFooter = styled.div`
+const ProgressWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin-top: ${rem(20)};
+  width: 100%;
+  div:first-child {
+    margin-right: 20px;
+  }
+`;
+
+const CardFooter = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  padding-top: ${rem(20)};
+  width: 100%;
 `;
 
 const PollMeta = styled.div`
@@ -67,6 +68,16 @@ const VoteButton = styled(Button)`
   justify-self: flex-end;
 `;
 
+const IconWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  margin-left: ${rem(8)};
+  justify-content: center;
+  width: ${rem(12)};
+`;
+
+const NavigationButton = styled(Button)``;
+
 interface CardProps {
   title?: string;
   pincode: string;
@@ -75,8 +86,10 @@ interface CardProps {
   counts: PollCounts;
   endTime?: Date;
   owner?: string;
-  showPollMeta?: boolean;
   userAnswer?: PollOption;
+  isOwner?: boolean;
+  onClick?: () => void;
+  showVoteButton?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -88,14 +101,15 @@ export const Card: FC<CardProps> = ({
   endTime,
   owner,
   userAnswer,
-  showPollMeta = false,
+  isOwner,
+  onClick,
+  showVoteButton = false,
 }) => {
   const timeLeft = getRemainingTime(endTime);
-  const canVote = userAnswer === undefined;
-  console.log({ canVote, userAnswer });
+  const canVote = !userAnswer && showVoteButton;
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
-  const pollTimeRemaining = getRemainingPollDays(endTime);
+  const showNavigationButton = onClick !== undefined;
 
   return (
     <CardWrapper>
@@ -103,49 +117,63 @@ export const Card: FC<CardProps> = ({
       <>
         <OptionWrapper>
           <OptionDescription>{optionOne}</OptionDescription>
-          <Progress
-            background={colors.green}
-            value={counts.optionOneCount}
-            total={votesCount}
-          />
-          {canVote && (
-            <VoteButton
-              onClick={() =>
-                mutate({
-                  option: PollOption.One,
-                  pollId: pincode,
-                })
-              }
-            >
-              Vote
-            </VoteButton>
-          )}
+          <ProgressWrapper>
+            <Progress
+              background={colors.green}
+              value={counts.optionOneCount}
+              total={votesCount}
+            />
+            {canVote && (
+              <VoteButton
+                onClick={() =>
+                  mutate({
+                    option: PollOption.One,
+                    pollId: pincode,
+                  })
+                }
+              >
+                Vote
+              </VoteButton>
+            )}
+          </ProgressWrapper>
         </OptionWrapper>
         <OptionWrapper>
           <OptionDescription>{optionTwo}</OptionDescription>
-          <Progress
-            background={colors.red}
-            value={counts.optionTwoCount}
-            total={votesCount}
-          />
-          {canVote && (
-            <VoteButton
-              onClick={() =>
-                mutate({
-                  option: PollOption.Two,
-                  pollId: pincode,
-                })
-              }
-            >
-              Vote
-            </VoteButton>
-          )}
+          <ProgressWrapper>
+            <Progress
+              background={colors.red}
+              value={counts.optionTwoCount}
+              total={votesCount}
+            />
+            {canVote && (
+              <VoteButton
+                onClick={() =>
+                  mutate({
+                    option: PollOption.Two,
+                    pollId: pincode,
+                  })
+                }
+              >
+                Vote
+              </VoteButton>
+            )}
+          </ProgressWrapper>
         </OptionWrapper>
       </>
       <CardFooter>
         {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
-        {/* ADD "GO TO POLL" / "EDIT POLL" button */}
+        {showNavigationButton && (
+          <NavigationButton
+            backgroundColor={isOwner ? colors.pink : colors.blueish}
+            onClick={onClick}
+          >
+            {isOwner ? 'Edit' : 'Vote'}
+            <IconWrapper>
+              <ArrowRight />
+            </IconWrapper>
+          </NavigationButton>
+        )}
       </CardFooter>
     </CardWrapper>
   );

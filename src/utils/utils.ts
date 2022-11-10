@@ -1,6 +1,7 @@
 import { pathToRegexp } from 'path-to-regexp';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import jwtDecode from 'jwt-decode';
+import { Poll } from 'src/types/types';
 
 export const LOGIN_HEADER = 'FEEDAPP';
 export const mapRouteToHeaderTitle = (path: string) => {
@@ -54,7 +55,7 @@ const getRemainingTimeWithUnit = (timeDiff: number): string => {
 };
 
 export const getRemainingTime = (endDate: Date | undefined): string => {
-  if (endDate === undefined) {
+  if (endDate === undefined || endDate === null) {
     return '';
   }
   const timeDiff = Number(endDate) - Number(new Date());
@@ -90,3 +91,21 @@ export const deleteTokens = () => {
   localStorage.removeItem('jwtToken');
   document.cookie = '';
 };
+
+export const formatDate = (date: Date | undefined) => {
+  if (!date) {
+    return undefined
+  }
+  return date.toISOString().slice(0, -8)
+};
+
+export const filterOwnedPolls = (polls: Poll[], userId: string | undefined): [Poll[], Poll[]] => {
+  const ownedPolls: Poll[] = [];
+  const otherPolls: Poll[] = [];
+
+  polls.forEach(poll => {
+    (poll.owner.id === userId ? ownedPolls : otherPolls).push(poll);
+  });
+
+  return [ownedPolls, otherPolls];
+} 

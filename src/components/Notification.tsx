@@ -30,6 +30,8 @@ const NotificationWrapper = styled.div`
     transform: translateY(-60px);
     min-width: 0;
   }
+
+  z-index: 100;
 `;
 
 enum AlertStatuses {
