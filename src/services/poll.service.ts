@@ -22,9 +22,10 @@ export const createPoll = async (request: PollCreateRequest): Promise<Poll> => {
 
 export const patchPoll = async (
   // JsonPatch expects an array of operations in the document
+  id: string,
   request: PollPatchOperation[],
 ): Promise<Poll> => {
-  return (await apiClient.patch<Poll>(BASE_URL, request)).data;
+  return (await apiClient.patch<Poll>(`${BASE_URL}/${id}`, request)).data;
 };
 
 export const deletePoll = async (id: string): Promise<Poll> => {

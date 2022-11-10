@@ -15,7 +15,7 @@ import {
 import {
   Poll,
   PollCreateRequest,
-  PollPatchOperation,
+  PollPatchRequest,
   VoteRequest,
 } from 'src/types/types';
 import { addLocalVote } from 'src/utils/utils';
@@ -81,7 +81,7 @@ export const useCreatePoll = () => {
 export const usePatchPoll = () => {
   const queryClient = useQueryClient();
 
-  return useMutation((request: PollPatchOperation[]) => patchPoll(request), {
+  return useMutation((request: PollPatchRequest) => patchPoll(request.id, request.operations), {
     onSuccess: (newPoll: Poll) => {
       const prevPolls: Poll[] | undefined = queryClient.getQueryData(['polls']);
 

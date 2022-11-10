@@ -76,11 +76,16 @@ interface PatchOperation {
 
 export enum PollPatchOption {
   Access = '/access',
-  EndDate = '/endDate',
+  EndTime = '/endTime',
 }
 
 export interface PollPatchOperation extends PatchOperation {
   path: PollPatchOption;
+}
+
+export interface PollPatchRequest {
+  id: string;
+  operations: PollPatchOperation[];
 }
 
 export interface VoteRequest {
