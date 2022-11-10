@@ -23,12 +23,16 @@ const Heading = styled.div`
 
 const CreatePollButton = styled(Button)`
   background: ${colors.blueish};
+  height: ${rem(30)};
+  font-size: ${rem(14)};
+  padding: 0 ${rem(10)};
 `;
 
 const HeadingAndButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const InputWrapper = styled.form`
@@ -36,8 +40,16 @@ const InputWrapper = styled.form`
 `;
 
 const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   margin-left: ${rem(8)};
   width: ${rem(12)};
+`;
+
+const Spacing = styled.div`
+  height: ${rem(20)};
 `;
 
 export const PollsPage: FC = () => {
@@ -85,28 +97,33 @@ export const PollsPage: FC = () => {
           </InputWrapper>
         </>
       ) : null}
-      <HeadingAndButtonWrapper>
-        <Heading>My polls</Heading>
-        <CreatePollButton onClick={() => navigate(baseRoutes.createPoll)}>
-          New poll
-          <IconWrapper>
-            <Plus />
-          </IconWrapper>
-        </CreatePollButton>
-      </HeadingAndButtonWrapper>
-      {ownedPolls.map(poll => {
-        return (
-          <Card
-            title={poll.question}
-            pincode={poll.pincode}
-            optionOne={poll.optionOne}
-            optionTwo={poll.optionTwo}
-            counts={poll.counts}
-            isOwner
-            onClick={() => navigate(`poll/${poll.pincode}/edit`)}
-          />
-        );
-      })}
+      {loggedInUser && (
+        <>
+          <HeadingAndButtonWrapper>
+            <Heading>My polls</Heading>
+            <CreatePollButton onClick={() => navigate(baseRoutes.createPoll)}>
+              New poll
+              <IconWrapper>
+                <Plus />
+              </IconWrapper>
+            </CreatePollButton>
+          </HeadingAndButtonWrapper>
+          {loggedInUser && ownedPolls.length === 0 && <p>You have no polls!</p>}
+          {ownedPolls.map(poll => {
+            return (
+              <Card
+                title={poll.question}
+                pincode={poll.pincode}
+                optionOne={poll.optionOne}
+                optionTwo={poll.optionTwo}
+                counts={poll.counts}
+                isOwner
+                onClick={() => navigate(`poll/${poll.pincode}/edit`)}
+              />
+            );
+          })}
+        </>
+      )}
 
       {otherPolls.length > 0 && <Heading>Ongoing polls</Heading>}
       {otherPolls.map(poll => {
@@ -121,6 +138,7 @@ export const PollsPage: FC = () => {
           />
         );
       })}
+      <Spacing />
     </>
   );
 };

@@ -1,7 +1,8 @@
+import { rem } from 'polished';
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BackButton } from 'src/components/BackButton';
-import { Button } from 'src/components/Button';
+import { Button, WideButton } from 'src/components/Button';
 import { Input } from 'src/components/Input';
 import { useDeletePoll, usePatchPoll } from 'src/hooks/poll.hooks';
 import { colors } from 'src/styles/colors';
@@ -20,6 +21,9 @@ import {
 
 const DeleteButton = styled(Button)`
   background-color: ${colors.red};
+  margin-top: ${rem(20)};
+  height: ${rem(30)};
+  font-size: ${rem(16)};
 `;
 
 export const EditPollPage: FC = () => {
@@ -82,7 +86,7 @@ export const EditPollPage: FC = () => {
           />
         </CheckboxAndLabelWrapper>
         <ButtonsWrapper>
-          <Button type="submit">Save</Button>
+          <WideButton type="submit">Save</WideButton>
           <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
         </ButtonsWrapper>
       </form>

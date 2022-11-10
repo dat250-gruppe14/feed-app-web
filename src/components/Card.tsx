@@ -23,7 +23,7 @@ const CardWrapper = styled.div`
 
 const CardTitle = styled.div`
   font-style: normal;
-  font-size: ${rem(20)};
+  font-size: ${rem(22)};
   font-weight: 700;
   line-height: ${rem(32)};
   margin-bottom: ${rem(16)};
@@ -36,7 +36,7 @@ const OptionWrapper = styled.div`
 `;
 
 const OptionDescription = styled.p`
-  font-size: ${rem(14)};
+  font-size: ${rem(18)};
   font-weight: 700;
 `;
 
@@ -44,15 +44,12 @@ const ProgressWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  div:first-child {
-    margin-right: 20px;
-  }
 `;
 
 const CardFooter = styled.div`
   display: flex;
   flex-direction: row-reverse;
-  padding-top: ${rem(20)};
+  padding-top: ${rem(14)};
   width: 100%;
 `;
 
@@ -66,17 +63,25 @@ const VoteButton = styled(Button)`
   align-self: flex-end;
   background: ${colors.blueish};
   justify-self: flex-end;
+  margin-left: ${rem(14)};
+  height: ${rem(30)};
+  font-size: ${rem(16)};
+  padding: ${rem(14)};
 `;
 
 const IconWrapper = styled.div`
   align-items: center;
   display: flex;
-  margin-left: ${rem(8)};
+  margin-left: ${rem(5)};
   justify-content: center;
   width: ${rem(12)};
 `;
 
-const NavigationButton = styled(Button)``;
+const NavigationButton = styled(Button)`
+  height: ${rem(30)};
+  font-size: ${rem(16)};
+  padding: 0 ${rem(10)};
+`;
 
 interface CardProps {
   title?: string;

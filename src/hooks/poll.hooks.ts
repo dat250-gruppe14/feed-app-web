@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { notify } from 'src/components/store/notification';
+import { notify } from 'src/store/notification';
 import { baseRoutes } from 'src/routes/baseRoutes';
 
 import {

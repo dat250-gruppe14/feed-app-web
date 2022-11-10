@@ -28,7 +28,7 @@ const AlertDescription = styled(Link)<{ isActive: boolean }>`
   font-size: ${rem(14)};
   font-weight: 700;
   text-decoration: none;
-  cursor: none;
+  cursor: default;
 
   ${({ isActive }) =>
     isActive &&
@@ -45,13 +45,13 @@ interface AlertProps {
 }
 
 export const Alert: FC<AlertProps> = props => {
-  const { description, icon, href = '' } = props;
-  const isActive = href !== '';
+  const { description, icon, href } = props;
+  const isActive = href !== undefined;
 
   return (
     <AlertWrapper>
       <AlertIcon>{icon}</AlertIcon>
-      <AlertDescription to={href} isActive={isActive}>
+      <AlertDescription to={href ?? ''} isActive={isActive}>
         {description}
       </AlertDescription>
     </AlertWrapper>
