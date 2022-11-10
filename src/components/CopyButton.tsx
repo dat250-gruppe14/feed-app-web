@@ -6,55 +6,59 @@ import { colors } from 'src/styles/colors';
 import { Copy } from 'src/components/svg/Copy';
 
 type CopyButtonProps = {
-	label: string;
-	value: string;
-}
+  label: string;
+  value: string;
+};
 
 const CopyIconWrapper = styled.div`
-	margin-right: ${rem(5)};
-	width: ${rem(10)};
+  margin-right: ${rem(5)};
+  width: ${rem(10)};
 `;
 
 const CopyButtonWrapper = styled.div`
-	display: flex;
-	cursor: pointer;
-	justify-content: center;
-	width: 100%;
+  display: flex;
+  cursor: pointer;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: ${rem(20)};
 
-	&:active {
-		filter: brightness(85%);
-	}
+  &:active {
+    filter: brightness(85%);
+  }
 `;
 
 const CopyBox = styled.div`
-	align-self: center;
-	background: ${colors.backgroundSecondary};
-	border-radius: 20px;
-	display: inline-flex;
-	padding: 10px 23px;
+  align-self: center;
+  background: ${colors.backgroundSecondary};
+  border-radius: 20px;
+  display: inline-flex;
+  padding: 10px 23px;
+  font-weight: bold;
 `;
 
+export const CopyToClipboardButton: FC<CopyButtonProps> = ({
+  label,
+  value,
+}) => {
+  const [isCopied, setIsCopied] = useState(false);
 
-export const CopyToClipboardButton: FC<CopyButtonProps> = ({label, value}) => {
-	const [isCopied, setIsCopied] = useState(false);
+  const labelText = isCopied ? 'Copied' : label;
 
-	const labelText = isCopied ? 'Copied' : label;
+  const copyFunction = () => {
+    navigator.clipboard.writeText(value);
+    setIsCopied(true);
 
-	const copyFunction = () => {
-		navigator.clipboard.writeText(value);
-		setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 1000);
+  };
 
-		setTimeout(() => setIsCopied(false), 1000);
-	}
-
-	return (
-			<CopyButtonWrapper onClick={copyFunction}>
-				<CopyBox>
-					<CopyIconWrapper>
-						<Copy />
-					</CopyIconWrapper>
-					{`${labelText}: ${value}`}
-				</CopyBox>
-			</CopyButtonWrapper>
-	)
-}
+  return (
+    <CopyButtonWrapper onClick={copyFunction}>
+      <CopyBox>
+        <CopyIconWrapper>
+          <Copy />
+        </CopyIconWrapper>
+        {`${labelText}: ${value}`}
+      </CopyBox>
+    </CopyButtonWrapper>
+  );
+};

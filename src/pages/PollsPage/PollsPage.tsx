@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { Card } from 'src/components/Card';
-import { useGetPoll, useGetPolls } from 'src/hooks/poll.hooks';
+import { useGetPolls, useGetPollWithMutate } from 'src/hooks/poll.hooks';
 import { Input } from 'src/components/Input';
 import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
@@ -24,7 +24,7 @@ const Heading = styled.div`
 const CreatePollButton = styled(Button)`
   background: ${colors.blueish};
   height: ${rem(30)};
-  font-size: ${rem(14)};
+  font-size: ${rem(16)};
   padding: 0 ${rem(10)};
 `;
 
@@ -55,15 +55,13 @@ const Spacing = styled.div`
 export const PollsPage: FC = () => {
   const navigate = useNavigate();
   const polls = useGetPolls();
-  const [pincode, setPincode] = useState<string>('');
   const loggedInUser = useGetAuth();
-  const poll = useGetPoll(pincode);
+  const [pincode, setPincode] = useState<string>('');
+  const getPoll = useGetPollWithMutate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (poll.data) {
-      navigate(`poll/${pincode}`);
-    }
+    getPoll.mutate(pincode);
   };
 
   if (!polls.isSuccess) {

@@ -84,8 +84,8 @@ export interface PollPatchOperation extends PatchOperation {
 }
 
 export interface VoteRequest {
-  option: PollOption;
-  pollId: string;
+  optionSelected: PollOption;
+  pollPincode: string;
 }
 
 export interface LoginRequest {
@@ -108,4 +108,9 @@ export interface UpdateUserRequest {
   name: string;
   email: string;
   role?: AccountRole;
+}
+
+export interface LocalVote {
+  pincode: string;
+  optionSelected: PollOption;
 }

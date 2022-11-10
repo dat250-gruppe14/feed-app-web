@@ -1,7 +1,7 @@
 import { pathToRegexp } from 'path-to-regexp';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import jwtDecode from 'jwt-decode';
-import { Poll } from 'src/types/types';
+import { LocalVote, Poll } from 'src/types/types';
 
 export const LOGIN_HEADER = 'FEEDAPP';
 export const mapRouteToHeaderTitle = (path: string) => {
@@ -94,12 +94,15 @@ export const deleteTokens = () => {
 
 export const formatDate = (date: Date | undefined) => {
   if (!date) {
-    return undefined
+    return undefined;
   }
-  return date.toISOString().slice(0, -8)
+  return date.toISOString().slice(0, -8);
 };
 
-export const filterOwnedPolls = (polls: Poll[], userId: string | undefined): [Poll[], Poll[]] => {
+export const filterOwnedPolls = (
+  polls: Poll[],
+  userId: string | undefined,
+): [Poll[], Poll[]] => {
   const ownedPolls: Poll[] = [];
   const otherPolls: Poll[] = [];
 
@@ -108,4 +111,20 @@ export const filterOwnedPolls = (polls: Poll[], userId: string | undefined): [Po
   });
 
   return [ownedPolls, otherPolls];
-} 
+};
+
+export const getLocalVotes = (): LocalVote[] => {
+  const localVotesStr = localStorage.getItem('localVotes');
+  if (!localVotesStr) return [];
+  return JSON.parse(localVotesStr);
+};
+
+export const setLocalVotes = (votes: LocalVote[]) => {
+  localStorage.setItem('localVotes', JSON.stringify(votes));
+};
+
+export const addLocalVote = (vote: LocalVote) => {
+  const votes = getLocalVotes();
+  votes.push(vote);
+  setLocalVotes(votes);
+};
