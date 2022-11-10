@@ -51,9 +51,9 @@ const ProgressWrapper = styled.div`
 
 const CardFooter = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: row-reverse;
   padding-top: ${rem(20)};
+  width: 100%;
 `;
 
 const PollMeta = styled.div`
@@ -76,6 +76,8 @@ const IconWrapper = styled.div`
   width: ${rem(12)};
 `;
 
+const NavigationButton = styled(Button)``;
+
 interface CardProps {
   title?: string;
   pincode: string;
@@ -87,6 +89,7 @@ interface CardProps {
   userAnswer?: PollOption;
   isOwner?: boolean;
   onClick?: () => void;
+  showVoteButton?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -100,9 +103,10 @@ export const Card: FC<CardProps> = ({
   userAnswer,
   isOwner,
   onClick,
+  showVoteButton = false,
 }) => {
   const timeLeft = getRemainingTime(endTime);
-  const canVote = userAnswer === undefined;
+  const canVote = !userAnswer && showVoteButton;
   const { mutate } = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const showNavigationButton = onClick !== undefined;
@@ -160,12 +164,15 @@ export const Card: FC<CardProps> = ({
         {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
         {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
         {showNavigationButton && (
-          <Button onClick={onClick}>
+          <NavigationButton
+            backgroundColor={isOwner ? colors.pink : colors.blueish}
+            onClick={onClick}
+          >
             {isOwner ? 'Edit' : 'Vote'}
             <IconWrapper>
               <ArrowRight />
             </IconWrapper>
-          </Button>
+          </NavigationButton>
         )}
       </CardFooter>
     </CardWrapper>

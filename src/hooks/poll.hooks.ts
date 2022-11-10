@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { notify } from 'src/components/store/notification';
+import { baseRoutes } from 'src/routes/baseRoutes';
 
 import {
   createPoll,
@@ -35,18 +38,25 @@ export const useGetPoll = (id: string) => {
       queryClient.getQueryData<Poll[]>(['polls'])?.find(p => p.pincode === id),
     initialDataUpdatedAt: () =>
       queryClient.getQueryState(['polls'])?.dataUpdatedAt,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
+    },
   });
 };
 
 export const useCreatePoll = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   return useMutation((request: PollCreateRequest) => createPoll(request), {
     onSuccess: (newPoll: Poll) => {
       queryClient.setQueryData(['polls', newPoll.id], newPoll);
+      navigate(baseRoutes.index);
     },
-    onError: () => {
-      console.log('useCreatePoll error');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
     },
   });
 };
@@ -58,22 +68,26 @@ export const usePatchPoll = () => {
     onSuccess: (newPoll: Poll) => {
       queryClient.setQueryData(['polls', newPoll.id], newPoll);
     },
-    onError: () => {
-      console.log('useUpdatePoll error');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
     },
   });
 };
 
 export const useDeletePoll = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation((id: string) => deletePoll(id), {
     onSuccess: (oldPoll: Poll) => {
       queryClient.invalidateQueries(['polls']);
       queryClient.invalidateQueries(['polls', oldPoll.id]);
+      navigate(baseRoutes.index);
     },
-    onError: () => {
-      console.log('useDeletePoll error');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
     },
   });
 };

@@ -1,9 +1,9 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
 import { Card } from 'src/components/Card';
-import { useGetPolls } from 'src/hooks/poll.hooks';
+import { useGetPoll, useGetPolls } from 'src/hooks/poll.hooks';
 import { Input } from 'src/components/Input';
 import { Alert } from 'src/components/Alert';
 import { AlertCircle } from 'src/components/svg/AlertCircle';
@@ -31,7 +31,7 @@ const HeadingAndButtonWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.form`
   margin: ${rem(20)} 0;
 `;
 
@@ -43,7 +43,16 @@ const IconWrapper = styled.div`
 export const PollsPage: FC = () => {
   const navigate = useNavigate();
   const polls = useGetPolls();
+  const [pincode, setPincode] = useState<string>('');
   const loggedInUser = useGetAuth();
+  const poll = useGetPoll(pincode);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (poll.data) {
+      navigate(`poll/${pincode}`);
+    }
+  };
 
   if (!polls.isSuccess) {
     return <Spinner />;
@@ -51,7 +60,7 @@ export const PollsPage: FC = () => {
 
   const [ownedPolls, otherPolls] = filterOwnedPolls(
     polls.data,
-    loggedInUser!.data!.user.id,
+    loggedInUser?.data?.user.id,
   );
 
   return (
@@ -66,8 +75,13 @@ export const PollsPage: FC = () => {
       {loggedInUser ? (
         <>
           <Heading>Join poll by pincode</Heading>
-          <InputWrapper>
-            <Input type="number" placeholder="Enter pincode..." />
+          <InputWrapper onSubmit={handleSubmit}>
+            <Input
+              type="number"
+              placeholder="Enter pincode..."
+              onChange={e => setPincode(e.target.value)}
+              required
+            />
           </InputWrapper>
         </>
       ) : null}
@@ -103,6 +117,7 @@ export const PollsPage: FC = () => {
             optionOne={poll.optionOne}
             optionTwo={poll.optionTwo}
             counts={poll.counts}
+            onClick={() => navigate(`poll/${poll.pincode}`)}
           />
         );
       })}

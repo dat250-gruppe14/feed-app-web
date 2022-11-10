@@ -55,7 +55,7 @@ const getRemainingTimeWithUnit = (timeDiff: number): string => {
 };
 
 export const getRemainingTime = (endDate: Date | undefined): string => {
-  if (endDate === undefined) {
+  if (endDate === undefined || endDate === null) {
     return '';
   }
   const timeDiff = Number(endDate) - Number(new Date());
@@ -90,6 +90,13 @@ export const getToken = () => {
 export const deleteTokens = () => {
   localStorage.removeItem('jwtToken');
   document.cookie = '';
+};
+
+export const formatDate = (date: Date | undefined) => {
+  if (!date) {
+    return undefined
+  }
+  return date.toISOString().slice(0, -8)
 };
 
 export const filterOwnedPolls = (polls: Poll[], userId: string | undefined): [Poll[], Poll[]] => {
