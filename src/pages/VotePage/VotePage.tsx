@@ -18,10 +18,10 @@ export const VotePage: FC = () => {
   }
 
   const poll = pollWithStatus.data;
-  const hasPollStarted = poll.startTime >= now;
-  const hasPollExpired = poll.endTime && poll.endTime < now;
+  const hasPollStarted = new Date(poll.startTime) < now;
+  const isPollActive = !poll.endTime || new Date(poll.endTime) > now;
 
-  const showPollAlert = !hasPollStarted || hasPollExpired;
+  const showPollAlert = !hasPollStarted || !isPollActive;
 
   return (
     <>
@@ -30,7 +30,7 @@ export const VotePage: FC = () => {
         <Alert
           icon={<AlertTriangle />}
           description={`This poll has ${
-            hasPollStarted ? 'not started' : 'expired'
+            !hasPollStarted ? 'not started' : 'expired'
           }!`}
         />
       ) : null}
