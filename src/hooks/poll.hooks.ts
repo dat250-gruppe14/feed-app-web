@@ -122,7 +122,6 @@ export const useDeletePoll = () => {
 
 export const useVotePoll = () => {
   const queryClient = useQueryClient();
-  const mutatePoll = useGetPollWithMutate();
 
   return useMutation(
     (request: VoteRequest) => votePoll(request.pollPincode, request),

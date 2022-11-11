@@ -15,8 +15,10 @@ import { Button } from 'src/components/Button';
 import { colors } from 'src/styles/colors';
 import { useNavigate } from 'react-router-dom';
 import { Plus } from 'src/components/svg/Plus';
+import { AccountRole } from 'src/types/types';
+import { AdminPage } from './AdminPage';
 
-const Heading = styled.div`
+export const Heading = styled.div`
   font-size: ${rem(24)};
   font-weight: 700;
 `;
@@ -72,6 +74,10 @@ export const PollsPage: FC = () => {
     polls.data,
     loggedInUser?.data?.user.id,
   );
+
+  if (loggedInUser && loggedInUser?.data?.user.role === AccountRole.Admin) {
+    return <AdminPage />;
+  }
 
   return (
     <>

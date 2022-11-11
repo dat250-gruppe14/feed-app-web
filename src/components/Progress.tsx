@@ -46,7 +46,7 @@ export const Progress: FC<ProgressBarProps> = ({
   return (
     <ProgressBarWrapper>
       <Bar percentage={percentageValue} background={background}>
-        {`${percentageValue}%`}
+        {`${value}`}
       </Bar>
     </ProgressBarWrapper>
   );

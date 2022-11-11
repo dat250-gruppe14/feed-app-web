@@ -5,9 +5,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { colors } from 'src/styles/colors';
 import { LOGIN_HEADER, mapRouteToHeaderTitle } from 'src/utils/utils';
+import { baseRoutes } from 'src/routes/baseRoutes';
 import { Logo } from './svg/Logo';
 import { HeaderUserButton } from './HeaderUserButton';
-import { baseRoutes } from 'src/routes/baseRoutes';
 
 const HeaderWrapper = styled.div`
   margin: ${rem(40)} 0 ${rem(20)} 0;

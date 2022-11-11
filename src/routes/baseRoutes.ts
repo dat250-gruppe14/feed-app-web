@@ -8,4 +8,5 @@ export const baseRoutes = {
   profile: '/profile',
   login: '/login',
   register: '/register',
+  users: '/users',
 };

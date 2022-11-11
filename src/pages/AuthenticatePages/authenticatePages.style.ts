@@ -35,7 +35,7 @@ export const ButtonsWrapper = styled(CenteredContent)`
 
 export const AuthSubmitButton = styled(Button)`
   width: ${rem(160)};
-  margin-bottom: ${rem(30)};
+  margin-bottom: ${rem(20)};
 `;
 
 export const AuthSecondaryButton = styled(Button)`
@@ -47,8 +47,9 @@ export const AuthSecondaryButton = styled(Button)`
 `;
 
 export const PollsButton = styled(Button)`
-  bottom: ${rem(50)};
-  position: absolute;
+  bottom: ${rem(30)};
+  /* position: absolute; */
+  margin: ${rem(50)} 0;
 
   font-size: ${rem(14)};
   background-color: ${colors.backgroundSecondary};
