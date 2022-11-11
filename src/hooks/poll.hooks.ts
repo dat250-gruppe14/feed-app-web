@@ -16,10 +16,12 @@ import {
   Poll,
   PollCreateRequest,
   PollPatchRequest,
+  UserWithToken,
   VoteRequest,
 } from 'src/types/types';
 import { addLocalVote } from 'src/utils/utils';
 import { FETCH_DEFAULT_OPTIONS } from './config';
+import { useGetAuth } from './auth.hooks';
 
 export const useGetPolls = () => {
   return useQuery<Poll[], AxiosError>(
@@ -130,20 +132,20 @@ export const useDeletePoll = () => {
 
 export const useVotePoll = () => {
   const queryClient = useQueryClient();
-  const mutatePoll = useGetPollWithMutate();
+  const user = useGetAuth();
 
   return useMutation(
     (request: VoteRequest) => votePoll(request.pollPincode, request),
     {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onSuccess: (updatedPoll: Poll, request) => {
-        // queryClient.invalidateQueries(['polls', { id: updatedPoll.id }]);
         queryClient.invalidateQueries(['polls']);
-        // Litt igjen her
-        addLocalVote({
-          pincode: updatedPoll.pincode,
-          optionSelected: request.optionSelected,
-        });
+        if (!user?.data) {
+          addLocalVote({
+            pincode: updatedPoll.pincode,
+            optionSelected: request.optionSelected,
+          });
+        }
         notify('✅ Your vote is saved!');
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

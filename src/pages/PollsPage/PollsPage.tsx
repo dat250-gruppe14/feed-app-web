@@ -112,7 +112,9 @@ export const PollsPage: FC = () => {
               </IconWrapper>
             </CreatePollButton>
           </HeadingAndButtonWrapper>
-          {loggedInUser && ownedPolls.length === 0 && <p>You have no polls!</p>}
+          {loggedInUser && ownedPolls.length === 0 && (
+            <Alert description="You have no polls!" icon={<AlertCircle />} />
+          )}
           {ownedPolls.map(poll => {
             return (
               <Card
@@ -121,6 +123,9 @@ export const PollsPage: FC = () => {
                 optionOne={poll.optionOne}
                 optionTwo={poll.optionTwo}
                 counts={poll.counts}
+                owner={poll.owner.name}
+                endTime={poll.endTime}
+                userAnswerProp={poll.userAnswer}
                 isOwner
                 onClick={() => navigate(`poll/${poll.pincode}/edit`)}
               />
@@ -138,6 +143,9 @@ export const PollsPage: FC = () => {
             optionOne={poll.optionOne}
             optionTwo={poll.optionTwo}
             counts={poll.counts}
+            owner={poll.owner.name}
+            userAnswerProp={poll.userAnswer}
+            endTime={poll.endTime}
             onClick={() => navigate(`poll/${poll.pincode}`)}
           />
         );
