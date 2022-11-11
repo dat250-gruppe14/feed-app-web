@@ -37,11 +37,16 @@ export const EditPollPage: FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const request = [];
+    const operations = [];
     const formattedEndTime = formatDate(endTime);
 
+    if (!params.id) {
+      // TODO: Error notification?
+      return;
+    }
+
     if (isPrivate !== undefined) {
-      request.push({
+      operations.push({
         op: 'replace',
         value: isPrivate ? PollAccess.Private : PollAccess.Public,
         path: PollPatchOption.Access,
@@ -49,14 +54,17 @@ export const EditPollPage: FC = () => {
     }
 
     if (endTime && formattedEndTime) {
-      request.push({
+      operations.push({
         op: 'replace',
         value: formattedEndTime,
-        path: PollPatchOption.EndDate,
+        path: PollPatchOption.EndTime,
       });
     }
 
-    patchPoll(request);
+    patchPoll({
+      id: params.id,
+      operations,
+    });
   };
 
   const handleDelete = () => {
