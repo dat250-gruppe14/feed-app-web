@@ -49,15 +49,23 @@ const ProgressWrapper = styled.div`
 
 const CardFooter = styled.div`
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: space-between;
   padding-top: ${rem(14)};
   width: 100%;
+`;
+
+const LabelsWrapper = styled.div`
+  display: flex;
 `;
 
 const PollMeta = styled.div`
   background: rgba(0, 0, 0, 0.26);
   border-radius: ${rem(20)};
   padding: ${rem(4)} ${rem(14)};
+
+  &:not(last-of-type) {
+    margin-right: ${rem(8)};
+  }
 `;
 
 type VoteButtonProps = {
@@ -135,6 +143,8 @@ export const Card: FC<CardProps> = ({
     userAnswerProp,
   );
 
+  const hasVoted = userAnswer !== null && userAnswer !== undefined;
+
   const timeLeft = getRemainingTime(endTime);
   const canVote =
     (userAnswer === undefined || userAnswer === null) && showVoteButton;
@@ -150,9 +160,11 @@ export const Card: FC<CardProps> = ({
   useEffect(() => {
     if (!isLoggedIn) {
       setUserAnswer(getLocalPollVote(pincode)?.optionSelected);
+    } else {
+      setUserAnswer(userAnswerProp);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counts]);
+  }, [counts, userAnswerProp]);
 
   return (
     <CardWrapper>
@@ -163,8 +175,10 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.green}
-              value={counts.optionOneCount}
+              value={hasVoted ? counts.optionOneCount.toString() : '?'}
               total={votesCount}
+              barNr={1}
+              hasVoted={hasVoted}
             />
             {canVote && (
               <VoteButton
@@ -190,8 +204,10 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.red}
-              value={counts.optionTwoCount}
+              value={hasVoted ? counts.optionTwoCount.toString() : '?'}
               total={votesCount}
+              hasVoted={hasVoted}
+              barNr={2}
             />
             {canVote && (
               <VoteButton
@@ -236,8 +252,12 @@ export const Card: FC<CardProps> = ({
         </CardFooter>
       ) : (
         <CardFooter>
-          {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
-          {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+          <LabelsWrapper>
+            {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
+            {owner && showVoteButton && (
+              <PollMeta>{`Asked by ${owner}`}</PollMeta>
+            )}
+          </LabelsWrapper>
           {showNavigationButton && (
             <NavigationButton
               backgroundColor={isOwner ? colors.pink : colors.blueish}

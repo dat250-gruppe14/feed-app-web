@@ -59,7 +59,10 @@ export const getRemainingTime = (endDate: Date | undefined): string => {
   if (endDate === undefined || endDate === null) {
     return '';
   }
-  const timeDiff = Number(endDate) - Number(new Date());
+  const now = new Date();
+  const endDateParsed = new Date(endDate);
+
+  const timeDiff = endDateParsed.getTime() - now.getTime();
 
   const diffWithTimeUnit = getRemainingTimeWithUnit(Math.abs(timeDiff));
 

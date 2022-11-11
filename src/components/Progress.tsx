@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
@@ -12,7 +12,14 @@ const ProgressBarWrapper = styled.div`
   width: 100%;
 `;
 
-const Bar = styled.div<{ percentage: number; background: string }>`
+type BarProps = {
+  percentage: number;
+  background: string;
+  barNr: number;
+  hideAnswers?: boolean;
+};
+
+const Bar = styled.div<BarProps>`
   display: flex;
   background: ${({ background }) => background};
   border-radius: inherit;
@@ -27,25 +34,54 @@ const Bar = styled.div<{ percentage: number; background: string }>`
   padding: 0 ${rem(12)} 0 ${rem(12)};
   height: ${rem(30)};
 
+  animation: moveRightAndLeft 2s;
+  animation-iteration-count: ${props => (props.hideAnswers ? 'infinite' : 0)};
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+
+  ${props =>
+    props.barNr === 2 &&
+    css`
+      animation-direction: alternate-reverse;
+    `}
+
+  @keyframes moveRightAndLeft {
+    from {
+      max-width: 48%;
+    }
+    to {
+      max-width: 52%;
+    }
+  }
+
   transition: max-width 0.2s;
 `;
 
 interface ProgressBarProps {
-  value: number;
+  value: string;
   total: number;
   background: string;
+  barNr: number;
+  hasVoted: boolean;
 }
 
 export const Progress: FC<ProgressBarProps> = ({
   value,
   total,
   background,
+  barNr,
+  hasVoted,
 }) => {
-  const percentageValue = Math.round(calculatePercentage(value, total));
+  const percentageValue = Math.round(calculatePercentage(Number(value), total));
 
   return (
     <ProgressBarWrapper>
-      <Bar percentage={percentageValue} background={background}>
+      <Bar
+        percentage={percentageValue}
+        background={background}
+        hideAnswers={!hasVoted}
+        barNr={barNr}
+      >
         {`${value}`}
       </Bar>
     </ProgressBarWrapper>
