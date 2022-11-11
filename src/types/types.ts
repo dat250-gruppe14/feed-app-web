@@ -1,11 +1,11 @@
 export enum PollAccess {
-  Public = 'Public',
-  Private = 'Private',
+  Public,
+  Private,
 }
 
 export enum AccountRole {
-  User = 'User',
-  Admin = 'Admin',
+  User,
+  Admin,
 }
 
 export interface User {

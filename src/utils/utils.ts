@@ -1,7 +1,7 @@
 import { pathToRegexp } from 'path-to-regexp';
 import { baseRoutes } from 'src/routes/baseRoutes';
 import jwtDecode from 'jwt-decode';
-import { LocalVote, Poll } from 'src/types/types';
+import { LocalVote, Poll, User } from 'src/types/types';
 
 export const LOGIN_HEADER = 'FEEDAPP';
 export const mapRouteToHeaderTitle = (path: string) => {
@@ -12,6 +12,7 @@ export const mapRouteToHeaderTitle = (path: string) => {
   if (path.match(pathToRegexp(baseRoutes.profile))) return 'Profile';
   if (path.match(pathToRegexp(baseRoutes.login))) return LOGIN_HEADER;
   if (path.match(pathToRegexp(baseRoutes.register))) return LOGIN_HEADER;
+  if (path.match(pathToRegexp(baseRoutes.users))) return 'Users';
   return '';
 };
 
@@ -59,7 +60,6 @@ export const getRemainingTime = (endDate: Date | undefined): string => {
     return '';
   }
   const timeDiff = Number(endDate) - Number(new Date());
-  console.log({ timeDiff });
 
   const diffWithTimeUnit = getRemainingTimeWithUnit(Math.abs(timeDiff));
 
@@ -127,4 +127,15 @@ export const addLocalVote = (vote: LocalVote) => {
   const votes = getLocalVotes();
   votes.push(vote);
   setLocalVotes(votes);
+};
+
+export const getLocalPollVote = (pincode: string): LocalVote | undefined => {
+  return getLocalVotes().find(p => p.pincode === pincode);
+};
+
+export const usersNameSorter = (a: User, b: User): number => {
+  if (a.name > b.name) {
+    return 1;
+  }
+  return -1;
 };

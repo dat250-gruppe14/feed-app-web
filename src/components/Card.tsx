@@ -1,16 +1,17 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { rem } from 'polished';
 
 import { colors } from 'src/styles/colors';
-import { getRemainingTime } from 'src/utils/utils';
+import { getLocalPollVote, getRemainingTime } from 'src/utils/utils';
 import { PollOption, PollCounts } from 'src/types/types';
-import { useVotePoll } from 'src/hooks/poll.hooks';
+import { useVotePoll, useDeletePoll } from 'src/hooks/poll.hooks';
+import { useGetAuth } from 'src/hooks/auth.hooks';
 import { Progress } from './Progress';
 import { Button } from './Button';
 import { ArrowRight } from './svg/ArrowRight';
 
-const CardWrapper = styled.div`
+export const CardWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
   border-radius: ${rem(20)};
   display: flex;
@@ -21,7 +22,7 @@ const CardWrapper = styled.div`
   width: 100%;
 `;
 
-const CardTitle = styled.div`
+export const CardTitle = styled.div`
   font-style: normal;
   font-size: ${rem(22)};
   font-weight: 700;
@@ -109,10 +110,11 @@ interface CardProps {
   counts: PollCounts;
   endTime?: Date;
   owner?: string;
-  userAnswer?: PollOption;
+  userAnswerProp?: PollOption;
   isOwner?: boolean;
   onClick?: () => void;
   showVoteButton?: boolean;
+  adminCard?: boolean;
 }
 
 export const Card: FC<CardProps> = ({
@@ -123,17 +125,34 @@ export const Card: FC<CardProps> = ({
   counts,
   endTime,
   owner,
-  userAnswer,
+  userAnswerProp,
   isOwner,
   onClick,
   showVoteButton = false,
+  adminCard = false,
 }) => {
+  const [userAnswer, setUserAnswer] = useState<PollOption | undefined | null>(
+    userAnswerProp,
+  );
+
   const timeLeft = getRemainingTime(endTime);
   const canVote =
     (userAnswer === undefined || userAnswer === null) && showVoteButton;
   const vote = useVotePoll();
   const votesCount = counts.optionOneCount + counts?.optionTwoCount;
   const showNavigationButton = onClick !== undefined;
+
+  const user = useGetAuth();
+  const isLoggedIn = user?.data !== undefined;
+
+  const deletePoll = useDeletePoll();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setUserAnswer(getLocalPollVote(pincode)?.optionSelected);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counts]);
 
   return (
     <CardWrapper>
@@ -159,7 +178,7 @@ export const Card: FC<CardProps> = ({
                 Vote
               </VoteButton>
             )}
-            {showVoteButton && userAnswer !== null && (
+            {showVoteButton && userAnswer !== null && userAnswer !== undefined && (
               <VoteButton hidden={userAnswer === PollOption.Two} disabled>
                 Voted
               </VoteButton>
@@ -186,7 +205,7 @@ export const Card: FC<CardProps> = ({
                 Vote
               </VoteButton>
             )}
-            {showVoteButton && userAnswer !== null && (
+            {showVoteButton && userAnswer !== null && userAnswer !== undefined && (
               <VoteButton hidden={userAnswer === PollOption.One} disabled>
                 Voted
               </VoteButton>
@@ -194,21 +213,44 @@ export const Card: FC<CardProps> = ({
           </ProgressWrapper>
         </OptionWrapper>
       </>
-      <CardFooter>
-        {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
-        {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
-        {showNavigationButton && (
+
+      {adminCard ? (
+        <CardFooter>
           <NavigationButton
-            backgroundColor={isOwner ? colors.pink : colors.blueish}
-            onClick={onClick}
+            style={{
+              backgroundColor: colors.red,
+            }}
+            type="button"
+            onClick={() => {
+              // eslint-disable-next-line no-alert
+              const ok = window.confirm(
+                `Are you sure you want to delete the poll '${title}'?`,
+              );
+              if (ok) {
+                deletePoll.mutate(pincode);
+              }
+            }}
           >
-            {isOwner ? 'Edit' : 'Vote'}
-            <IconWrapper>
-              <ArrowRight />
-            </IconWrapper>
+            Delete poll
           </NavigationButton>
-        )}
-      </CardFooter>
+        </CardFooter>
+      ) : (
+        <CardFooter>
+          {timeLeft && <PollMeta>{timeLeft}</PollMeta>}
+          {owner && <PollMeta>{`Asked by ${owner}`}</PollMeta>}
+          {showNavigationButton && (
+            <NavigationButton
+              backgroundColor={isOwner ? colors.pink : colors.blueish}
+              onClick={onClick}
+            >
+              {isOwner ? 'Edit' : 'Vote'}
+              <IconWrapper>
+                <ArrowRight />
+              </IconWrapper>
+            </NavigationButton>
+          )}
+        </CardFooter>
+      )}
     </CardWrapper>
   );
 };

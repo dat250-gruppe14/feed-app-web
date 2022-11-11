@@ -81,21 +81,29 @@ export const useCreatePoll = () => {
 export const usePatchPoll = () => {
   const queryClient = useQueryClient();
 
-  return useMutation((request: PollPatchRequest) => patchPoll(request.id, request.operations), {
-    onSuccess: (newPoll: Poll) => {
-      const prevPolls: Poll[] | undefined = queryClient.getQueryData(['polls']);
+  return useMutation(
+    (request: PollPatchRequest) => patchPoll(request.id, request.operations),
+    {
+      onSuccess: (newPoll: Poll) => {
+        const prevPolls: Poll[] | undefined = queryClient.getQueryData([
+          'polls',
+        ]);
 
-      queryClient.setQueryData(
-        ['polls'],
-        [...(prevPolls?.filter(poll => poll.id !== newPoll.id) ?? []), newPoll],
-      );
-      notify('✅ Poll was updated!');
+        queryClient.setQueryData(
+          ['polls'],
+          [
+            ...(prevPolls?.filter(poll => poll.id !== newPoll.id) ?? []),
+            newPoll,
+          ],
+        );
+        notify('✅ Poll was updated!');
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (err: any) => {
+        notify(`❌ ${err.response.data.message}`);
+      },
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (err: any) => {
-      notify(`❌ ${err.response.data.message}`);
-    },
-  });
+  );
 };
 
 export const useDeletePoll = () => {

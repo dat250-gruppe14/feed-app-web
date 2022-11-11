@@ -48,7 +48,7 @@ export const VotePage: FC = () => {
         optionOne={poll.optionOne}
         optionTwo={poll.optionTwo}
         owner={poll.owner.name}
-        userAnswer={poll.userAnswer}
+        userAnswerProp={poll.userAnswer}
         endTime={poll.endTime}
         pincode={poll.pincode}
         showVoteButton

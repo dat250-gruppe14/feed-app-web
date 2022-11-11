@@ -52,3 +52,26 @@ export const useUpdateUser = () => {
     },
   );
 };
+
+export const useUpdateUsersRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (user: User) =>
+      updateUser(user.id, {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }),
+    {
+      onSuccess: (user: User) => {
+        queryClient.invalidateQueries(['users']);
+        notify(`✅ Updated role for ${user.name}`);
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      onError: (err: any) => {
+        notify(`❌ ${err.response.data.message}`);
+      },
+    },
+  );
+};
