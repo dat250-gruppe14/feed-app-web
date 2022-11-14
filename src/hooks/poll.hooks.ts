@@ -13,19 +13,22 @@ import {
   votePoll,
 } from 'src/services/poll.service';
 import {
-    Device,
+  Device,
   DeviceCreateRequest,
   DeviceUpdateRequest,
   Poll,
   PollCreateRequest,
   PollPatchRequest,
-  UserWithToken,
   VoteRequest,
 } from 'src/types/types';
 import { addLocalVote } from 'src/utils/utils';
+import {
+  createDevice,
+  deleteDevice,
+  updateDevice,
+} from 'src/services/device.service';
 import { FETCH_DEFAULT_OPTIONS } from './config';
 import { useGetAuth } from './auth.hooks';
-import { createDevice, deleteDevice, updateDevice } from 'src/services/device.service';
 
 export const useGetPolls = () => {
   return useQuery<Poll[], AxiosError>(
@@ -51,6 +54,7 @@ export const useGetPollWithMutate = () => {
 
 export const useGetPoll = (id: string) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useQuery<Poll, AxiosError>(['polls', id], () => getPoll(id), {
     ...FETCH_DEFAULT_OPTIONS,
@@ -61,6 +65,7 @@ export const useGetPoll = (id: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err: any) => {
       notify(`❌ ${err.response.data.message}`);
+      navigate(baseRoutes.index);
     },
   });
 };
@@ -165,7 +170,9 @@ export const useCreateDevice = () => {
 
   return useMutation((request: DeviceCreateRequest) => createDevice(request), {
     onSuccess: (newPoll: Device) => {
-      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+      const prevPolls: Device[] | undefined = queryClient.getQueryData([
+        'devices',
+      ]);
 
       queryClient.setQueryData(['devices'], [...(prevPolls ?? []), newPoll]);
       notify('✅ Device created!');
@@ -182,7 +189,9 @@ export const useUpdateDevice = () => {
 
   return useMutation((request: DeviceUpdateRequest) => updateDevice(request), {
     onSuccess: (oldPoll: Device) => {
-      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+      const prevPolls: Device[] | undefined = queryClient.getQueryData([
+        'devices',
+      ]);
 
       queryClient.setQueryData(
         ['devices'],
@@ -203,7 +212,9 @@ export const useDeleteDevice = () => {
 
   return useMutation((id: string) => deleteDevice(id), {
     onSuccess: (oldPoll: Device) => {
-      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+      const prevPolls: Device[] | undefined = queryClient.getQueryData([
+        'devices',
+      ]);
 
       queryClient.setQueryData(
         ['devices'],
@@ -218,4 +229,3 @@ export const useDeleteDevice = () => {
     },
   });
 };
-

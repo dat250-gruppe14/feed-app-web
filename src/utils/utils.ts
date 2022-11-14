@@ -99,7 +99,7 @@ export const formatDate = (date: Date | undefined) => {
   if (!date) {
     return undefined;
   }
-  return date.toISOString().slice(0, -8);
+  return date.toISOString();
 };
 
 export const filterOwnedPolls = (

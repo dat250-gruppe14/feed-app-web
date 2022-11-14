@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { BackButton } from 'src/components/BackButton';
 import { WideButton } from 'src/components/Button';
 import { Input } from 'src/components/Input';
+import { Spinner } from 'src/components/Spinner';
 import { useCreatePoll } from 'src/hooks/poll.hooks';
 import { colors } from 'src/styles/colors';
 import { PollAccess } from 'src/types/types';
@@ -28,7 +29,7 @@ export const Checkbox = styled.input`
 
 export const CreatePollPage: FC = () => {
   const now = new Date();
-  const { mutate } = useCreatePoll();
+  const createPoll = useCreatePoll();
 
   const [question, setQuestion] = useState('');
   const [optionOne, setOptionOne] = useState('');
@@ -39,7 +40,7 @@ export const CreatePollPage: FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({
+    createPoll.mutate({
       question,
       optionOne,
       optionTwo,
@@ -48,6 +49,10 @@ export const CreatePollPage: FC = () => {
       endTime,
     });
   };
+
+  if (createPoll.isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
