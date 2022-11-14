@@ -11,9 +11,7 @@ const htmlPlugin = new HtmlWebpackPlugin({
   template: path.resolve(__dirname, 'public', 'index.html'),
 });
 
-const dotEnv = new Dotenv({
-  defaults: true,
-})
+const dotEnv = new Dotenv()
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -43,6 +41,7 @@ const config = {
           {
             loader: require.resolve('babel-loader'),
             options: {
+              // Next line breaks production build btw
               plugins: [isDevelopment && require.resolve('react-refresh/babel')].filter(Boolean),
             },
          }

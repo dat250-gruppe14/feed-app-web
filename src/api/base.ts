@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { queryClient } from 'src/App';
 import { AUTH_BASE_URL, refreshToken } from 'src/services/auth.service';
-import { UserWithToken } from 'src/types/types';
 import { getToken, jwtTokenHasExpired, setToken } from 'src/utils/utils';
 
 export const apiClient = axios.create({
@@ -15,7 +14,6 @@ apiClient.interceptors.request.use(
     const tokenHasExpired = jwtTokenHasExpired(token);
 
     if (token && tokenHasExpired && !config.url?.includes(AUTH_BASE_URL)) {
-      console.log('setting new refreshtoken');
       refreshToken().then(data => {
         setToken(data.token);
         queryClient.setQueryData(['loggedInUser'], data);

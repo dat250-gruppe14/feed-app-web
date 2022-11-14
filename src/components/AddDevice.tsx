@@ -1,11 +1,11 @@
 import { rem } from 'polished';
 import { FC, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { colors } from 'src/styles/colors';
-import { Input } from './Input';
-import { Button } from './Button';
 import { useCreateDevice } from 'src/hooks/poll.hooks';
+import { Input } from './Input';
+import { ButtonMedium } from './Button';
 
 const AlertWrapper = styled.div`
   align-items: center;
@@ -30,7 +30,7 @@ const FormWrapper = styled.form`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  width: 100%
+  width: 100%;
 `;
 
 interface AddDeviceProps {
@@ -47,27 +47,27 @@ export const AddDevice: FC<AddDeviceProps> = props => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutate({
-	  name,
-	  pollPincode: pincode,
+      name,
+      pollPincode: pincode,
     });
-	setIsActive(false);
+    setIsActive(false);
   };
 
   return (
-	  <AlertWrapper onClick={() => setIsActive(true)}>
-	  <AlertIcon>{icon}</AlertIcon>
-	  {isActive ? (
-		  <FormWrapper onSubmit={handleSubmit} >
-		  <Input 
-			placeholder="Device name"
+    <AlertWrapper onClick={() => setIsActive(true)}>
+      <AlertIcon>{icon}</AlertIcon>
+      {isActive ? (
+        <FormWrapper onSubmit={handleSubmit}>
+          <Input
+            placeholder="Device name"
             onChange={e => setName(e.target.value)}
             required
-		  />
-		  <Button>Add device</Button>
-		  </FormWrapper> 
-		  ): "Add device"}
-
-	  </AlertWrapper>
-	  );
+          />
+          <ButtonMedium style={{ width: '180px' }}>Add device</ButtonMedium>
+        </FormWrapper>
+      ) : (
+        'Add device'
+      )}
+    </AlertWrapper>
+  );
 };
-

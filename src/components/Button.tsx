@@ -60,6 +60,12 @@ export const WideButton = styled(Button)`
   width: ${rem(280)};
 `;
 
+export const ButtonMedium = styled(Button)`
+  height: ${rem(30)};
+  font-size: ${rem(16)};
+  padding: ${rem(6)} ${rem(20)};
+`;
+
 /**
  * <Button onClick = {() => console.log('Button clicked')} 
             children = 'Click&#8594;' 

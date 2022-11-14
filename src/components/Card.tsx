@@ -175,10 +175,12 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.green}
-              value={hasVoted ? counts.optionOneCount.toString() : '?'}
+              value={
+                isOwner || hasVoted ? counts.optionOneCount.toString() : '?'
+              }
               total={votesCount}
               barNr={1}
-              hasVoted={hasVoted}
+              hasVoted={isOwner || hasVoted}
             />
             {canVote && (
               <VoteButton
@@ -204,9 +206,11 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.red}
-              value={hasVoted ? counts.optionTwoCount.toString() : '?'}
+              value={
+                isOwner || hasVoted ? counts.optionTwoCount.toString() : '?'
+              }
               total={votesCount}
-              hasVoted={hasVoted}
+              hasVoted={isOwner || hasVoted}
               barNr={2}
             />
             {canVote && (

@@ -3,9 +3,9 @@ import { FC, useState } from 'react';
 import styled from 'styled-components';
 
 import { colors } from 'src/styles/colors';
-import { Button } from './Button';
 import { useDeleteDevice, useUpdateDevice } from 'src/hooks/poll.hooks';
 import { Device } from 'src/types/types';
+import { ButtonMedium } from './Button';
 
 const AlertWrapper = styled.div`
   background: ${colors.backgroundSecondary} !important;
@@ -24,9 +24,15 @@ const DeleteButtonWrapper = styled.div`
   width: 100%;
 `;
 
-const DeleteButton = styled(Button)`
+const DeleteButton = styled(ButtonMedium)`
   padding-bottom: 0;
   padding-top: 0;
+`;
+
+const FormStyled = styled.form`
+  display: flex;
+  gap: ${rem(10)};
+  margin: ${rem(10)} 0;
 `;
 
 interface AddDeviceProps {
@@ -41,56 +47,60 @@ export const DeviceDisplay: FC<AddDeviceProps> = props => {
   const { mutate: updateDevice } = useUpdateDevice();
 
   const copyToClipboard = () => {
-	navigator.clipboard.writeText(JSON.stringify({ 
-	  id: device.id, 
-	  token: device.connectionToken, 
-	  url: process.env.FEED_APP_API_URL
-	}))
+    navigator.clipboard.writeText(
+      JSON.stringify({
+        id: device.id,
+        token: device.connectionToken,
+        url: process.env.FEED_APP_API_URL,
+      }),
+    );
   };
 
   return (
-	  <AlertWrapper onClick={() => setShowDetails(true)}>
-		<div>{device.name}</div>
-		{showDetails && (
-		<>
-		  <div>ID: {device.id}</div>
-		  {device.connectionToken && <div>Token: {device.connectionToken}</div>}
-		  <DeleteButtonWrapper>
-			{device.connectionToken && (
-			  <Button onClick={copyToClipboard}>
-				Copy connection config
-			  </Button>
-			)}
-			<form>
-			{device.connectedPoll?.pincode !== pollPincode &&(
-			  <Button onClick={() => {
-				updateDevice({
-				  id: device.id,
-				  name: device.name,
-				  pollPincode,
-				});
-			  }}>
-				Use device here
-			  </Button>
-			)}
-			<DeleteButton 
-			  onClick={() => {
-				  // eslint-disable-next-line no-alert
-				  const ok = window.confirm(
-					`Are you sure you want to delete the poll '${device.name}'?`,
-					);
-				  if (ok) {
-				  deleteDevice(device.id);
-				  }
-			  }}
-			  backgroundColor={colors.red}
-			>
-			  Delete
-			</DeleteButton>
-			</form>
-			</DeleteButtonWrapper>
-			</>
-			)}
-  </AlertWrapper>
-	);
+    <AlertWrapper onClick={() => setShowDetails(true)}>
+      <div>{device.name}</div>
+      {showDetails && (
+        <>
+          <div>ID: {device.id}</div>
+          {device.connectionToken && <div>Token: {device.connectionToken}</div>}
+          <DeleteButtonWrapper>
+            {device.connectionToken && (
+              <ButtonMedium onClick={copyToClipboard}>
+                Copy connection config
+              </ButtonMedium>
+            )}
+            <FormStyled>
+              {device.connectedPoll?.pincode !== pollPincode && (
+                <ButtonMedium
+                  onClick={() => {
+                    updateDevice({
+                      id: device.id,
+                      name: device.name,
+                      pollPincode,
+                    });
+                  }}
+                >
+                  Use device here
+                </ButtonMedium>
+              )}
+              <DeleteButton
+                onClick={() => {
+                  // eslint-disable-next-line no-alert
+                  const ok = window.confirm(
+                    `Are you sure you want to delete the poll '${device.name}'?`,
+                  );
+                  if (ok) {
+                    deleteDevice(device.id);
+                  }
+                }}
+                backgroundColor={colors.red}
+              >
+                Delete
+              </DeleteButton>
+            </FormStyled>
+          </DeleteButtonWrapper>
+        </>
+      )}
+    </AlertWrapper>
+  );
 };
