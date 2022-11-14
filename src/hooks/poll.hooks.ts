@@ -13,6 +13,9 @@ import {
   votePoll,
 } from 'src/services/poll.service';
 import {
+    Device,
+  DeviceCreateRequest,
+  DeviceUpdateRequest,
   Poll,
   PollCreateRequest,
   PollPatchRequest,
@@ -22,6 +25,7 @@ import {
 import { addLocalVote } from 'src/utils/utils';
 import { FETCH_DEFAULT_OPTIONS } from './config';
 import { useGetAuth } from './auth.hooks';
+import { createDevice, deleteDevice, updateDevice } from 'src/services/device.service';
 
 export const useGetPolls = () => {
   return useQuery<Poll[], AxiosError>(
@@ -155,3 +159,63 @@ export const useVotePoll = () => {
     },
   );
 };
+
+export const useCreateDevice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation((request: DeviceCreateRequest) => createDevice(request), {
+    onSuccess: (newPoll: Device) => {
+      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+
+      queryClient.setQueryData(['devices'], [...(prevPolls ?? []), newPoll]);
+      notify('✅ Device created!');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
+    },
+  });
+};
+
+export const useUpdateDevice = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation((request: DeviceUpdateRequest) => updateDevice(request), {
+    onSuccess: (oldPoll: Device) => {
+      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+
+      queryClient.setQueryData(
+        ['devices'],
+        [...(prevPolls?.filter(poll => poll.id !== oldPoll.id) ?? [])],
+      );
+      notify('✅ Device updated!');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
+    },
+  });
+};
+
+export const useDeleteDevice = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation((id: string) => deleteDevice(id), {
+    onSuccess: (oldPoll: Device) => {
+      const prevPolls: Device[] | undefined = queryClient.getQueryData(['devices']);
+
+      queryClient.setQueryData(
+        ['devices'],
+        [...(prevPolls?.filter(poll => poll.id !== oldPoll.id) ?? [])],
+      );
+      navigate(baseRoutes.index);
+      notify('✅ Device deleted!');
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (err: any) => {
+      notify(`❌ ${err.response.data.message}`);
+    },
+  });
+};
+
