@@ -1,10 +1,14 @@
 import { rem } from 'polished';
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { AddDevice } from 'src/components/AddDevice';
 import { BackButton } from 'src/components/BackButton';
 import { Button, WideButton } from 'src/components/Button';
 import { CopyToClipboardButton } from 'src/components/CopyButton';
+import { DeviceDisplay } from 'src/components/DeviceDisplay';
 import { Input } from 'src/components/Input';
+import { Plus } from 'src/components/svg/Plus';
+import { useGetDevices } from 'src/hooks/device.hooks';
 import { useDeletePoll, usePatchPoll } from 'src/hooks/poll.hooks';
 import { colors } from 'src/styles/colors';
 import { PollAccess, PollPatchOption } from 'src/types/types';
@@ -31,6 +35,9 @@ export const EditPollPage: FC = () => {
   const params = useParams();
   const { mutate: patchPoll } = usePatchPoll();
   const { mutate: deletePoll } = useDeletePoll();
+  const devices = useGetDevices()
+  const pollDevices = devices.data?.filter(d => d.connectedPoll?.pincode === params.id);
+  const notPollDevices = devices.data?.filter(d => d.connectedPoll?.pincode !== params.id) ?? [];
 
   const [isPrivate, setIsPrivate] = useState<boolean>();
   const [endTime, setEndTime] = useState<Date>();
@@ -100,6 +107,15 @@ export const EditPollPage: FC = () => {
           <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
         </ButtonsWrapper>
       </form>
+	  <h2>Devices</h2>
+	  {pollDevices?.map(d => <DeviceDisplay device={d}  pollPincode={params.id!}/>)}
+	  <AddDevice icon={<Plus />} pincode={params.id!} />
+	  {notPollDevices.length > 0 && (
+	  <>
+		<h3>Devices connected to other polls</h3>
+		{notPollDevices.map(d => <DeviceDisplay device={d} pollPincode={params.id!} />)}
+	  </>
+	  )}
     </>
   );
 };

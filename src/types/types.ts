@@ -18,7 +18,8 @@ export interface User {
 export interface Device {
   id: string;
   name: string;
-  pincode: number;
+  connectedPoll?: Poll;
+  connectionToken?: string;
 }
 
 export enum PollOption {
@@ -66,6 +67,17 @@ export interface PollCreateRequest {
   pincode?: string;
   startTime: Date;
   endTime?: Date;
+}
+
+export interface DeviceCreateRequest {
+  name: string;
+  pollPincode: string;
+}
+
+export interface DeviceUpdateRequest {
+  name: string;
+  pollPincode: string;
+  id: string;
 }
 
 interface PatchOperation {
