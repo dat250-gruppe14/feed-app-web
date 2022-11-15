@@ -143,19 +143,24 @@ export const Card: FC<CardProps> = ({
     userAnswerProp,
   );
 
-  const hasVoted = userAnswer !== null && userAnswer !== undefined;
-
-  const timeLeft = getRemainingTime(endTime);
-  const canVote =
-    (userAnswer === undefined || userAnswer === null) && showVoteButton;
-  const vote = useVotePoll();
-  const votesCount = counts.optionOneCount + counts?.optionTwoCount;
-  const showNavigationButton = onClick !== undefined;
-
+  const now = new Date();
   const user = useGetAuth();
-  const isLoggedIn = user?.data !== undefined;
-
   const deletePoll = useDeletePoll();
+  const vote = useVotePoll();
+
+  const votesCount = counts.optionOneCount + counts?.optionTwoCount;
+  const timeLeft = getRemainingTime(endTime);
+
+  const isLoggedIn = user?.data !== undefined;
+  const hasVoted = userAnswer !== null && userAnswer !== undefined;
+  const isPollActive = !endTime || new Date(endTime) > now;
+  const canVote =
+    (userAnswer === undefined || userAnswer === null) &&
+    showVoteButton &&
+    isPollActive;
+
+  const showNavigationButton = onClick !== undefined;
+  const showPollResult = isOwner || hasVoted || !isPollActive;
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -175,12 +180,10 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.green}
-              value={
-                isOwner || hasVoted ? counts.optionOneCount.toString() : '?'
-              }
+              value={showPollResult ? counts.optionOneCount.toString() : '?'}
               total={votesCount}
               barNr={1}
-              hasVoted={isOwner || hasVoted}
+              showResult={showPollResult}
             />
             {canVote && (
               <VoteButton
@@ -206,11 +209,9 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.red}
-              value={
-                isOwner || hasVoted ? counts.optionTwoCount.toString() : '?'
-              }
+              value={showPollResult ? counts.optionTwoCount.toString() : '?'}
               total={votesCount}
-              hasVoted={isOwner || hasVoted}
+              showResult={showPollResult}
               barNr={2}
             />
             {canVote && (

@@ -111,7 +111,7 @@ export const EditPollPage: FC = () => {
           <Input
             id="endTime"
             type="datetime-local"
-            value={endTime ? endTime.toISOString().slice(0, -8) : undefined}
+            value={formatDate(endTime)}
             onChange={e => setEndTime(new Date(e.target.value))}
           />
         </InputAndLabelWrapper>
