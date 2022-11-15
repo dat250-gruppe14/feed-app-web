@@ -121,7 +121,7 @@ export const EditPollPage: FC = () => {
             id="private"
             type="checkbox"
             onChange={() => setIsPrivate(!isPrivate)}
-            checked={!isPrivate}
+            checked={isPrivate}
           />
         </CheckboxAndLabelWrapper>
         <ButtonsWrapper>

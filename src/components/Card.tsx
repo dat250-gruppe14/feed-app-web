@@ -81,6 +81,7 @@ const VoteButton = styled(Button)<VoteButtonProps>`
   height: ${rem(30)};
   font-size: ${rem(16)};
   padding: ${rem(14)};
+  min-width: ${rem(75)};
 
   ${props =>
     props.disabled &&
@@ -180,10 +181,11 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.green}
-              value={showPollResult ? counts.optionOneCount.toString() : '?'}
+              value={counts.optionOneCount.toString()}
               total={votesCount}
               barNr={1}
               showResult={showPollResult}
+              isLoading={vote.isLoading}
             />
             {canVote && (
               <VoteButton
@@ -193,6 +195,7 @@ export const Card: FC<CardProps> = ({
                     pollPincode: pincode,
                   })
                 }
+                hidden={vote.isLoading}
               >
                 Vote
               </VoteButton>
@@ -209,10 +212,11 @@ export const Card: FC<CardProps> = ({
           <ProgressWrapper>
             <Progress
               background={colors.red}
-              value={showPollResult ? counts.optionTwoCount.toString() : '?'}
+              value={counts.optionTwoCount.toString()}
               total={votesCount}
               showResult={showPollResult}
               barNr={2}
+              isLoading={vote.isLoading}
             />
             {canVote && (
               <VoteButton
@@ -222,6 +226,7 @@ export const Card: FC<CardProps> = ({
                     pollPincode: pincode,
                   })
                 }
+                hidden={vote.isLoading}
               >
                 Vote
               </VoteButton>

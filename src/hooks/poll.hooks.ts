@@ -149,6 +149,18 @@ export const useVotePoll = () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onSuccess: (updatedPoll: Poll, request) => {
         queryClient.invalidateQueries(['polls']);
+
+        // const prevPolls: Poll[] | undefined = queryClient.getQueryData([
+        //   'polls',
+        // ]);
+        // queryClient.setQueryData(['polls', updatedPoll.id], updatedPoll);
+        // queryClient.setQueryData(
+        //   ['polls'],
+        //   [
+        //     ...(prevPolls?.filter(poll => poll.id !== updatedPoll.id) ?? []),
+        //     updatedPoll,
+        //   ],
+        // );
         if (!user?.data) {
           addLocalVote({
             pincode: updatedPoll.pincode,
