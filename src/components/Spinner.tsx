@@ -11,7 +11,7 @@ const SpinnerWrapper = styled.div`
   margin-top: ${rem(100)};
 `;
 
-const StyledSpinner = styled.svg`
+export const StyledSpinner = styled.svg`
   animation: rotate 2s linear infinite;
   margin: 0px 0 0 0px;
   width: 50px;
@@ -57,4 +57,26 @@ export const Spinner: FC = () => (
       />
     </StyledSpinner>
   </SpinnerWrapper>
+);
+
+const MiniSpinnerStyled = styled(StyledSpinner)`
+  width: 25px;
+  height: 25px;
+
+  & .path {
+    stroke: ${colors.white};
+  }
+`;
+
+export const MiniSpinner: FC = () => (
+  <MiniSpinnerStyled viewBox="0 0 50 50">
+    <circle
+      className="path"
+      cx="25"
+      cy="25"
+      r="20"
+      fill="none"
+      strokeWidth="4"
+    />
+  </MiniSpinnerStyled>
 );
