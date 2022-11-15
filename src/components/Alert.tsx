@@ -11,8 +11,8 @@ const AlertWrapper = styled.div`
   border-radius: ${rem(20)};
   display: flex;
   flex-direction: row;
-  margin: ${rem(20)} 0;
   height: max-content;
+  margin: ${rem(20)} 0;
   padding: ${rem(10)} ${rem(18)};
   width: 100%;
 `;
@@ -44,8 +44,7 @@ interface AlertProps {
   href?: string;
 }
 
-export const Alert: FC<AlertProps> = props => {
-  const { description, icon, href } = props;
+export const Alert: FC<AlertProps> = ({ description, icon, href }) => {
   const isActive = href !== undefined;
 
   return (

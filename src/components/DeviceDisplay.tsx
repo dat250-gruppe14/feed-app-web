@@ -64,12 +64,12 @@ export const DeviceDisplay: FC<AddDeviceProps> = props => {
           <div>ID: {device.id}</div>
           {device.connectionToken && <div>Token: {device.connectionToken}</div>}
           <DeleteButtonWrapper>
-            {device.connectionToken && (
-              <ButtonMedium onClick={copyToClipboard}>
-                Copy connection config
-              </ButtonMedium>
-            )}
             <FormStyled>
+              {device.connectionToken && (
+                <ButtonMedium type="button" onClick={copyToClipboard}>
+                  Copy connection config
+                </ButtonMedium>
+              )}
               {device.connectedPoll?.pincode !== pollPincode && (
                 <ButtonMedium
                   onClick={() => {
