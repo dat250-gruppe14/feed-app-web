@@ -62,7 +62,7 @@ interface ProgressBarProps {
   total: number;
   background: string;
   barNr: number;
-  hasVoted: boolean;
+  showResult: boolean;
 }
 
 export const Progress: FC<ProgressBarProps> = ({
@@ -70,7 +70,7 @@ export const Progress: FC<ProgressBarProps> = ({
   total,
   background,
   barNr,
-  hasVoted,
+  showResult,
 }) => {
   const percentageValue = Math.round(calculatePercentage(Number(value), total));
 
@@ -79,7 +79,7 @@ export const Progress: FC<ProgressBarProps> = ({
       <Bar
         percentage={percentageValue}
         background={background}
-        hideAnswers={!hasVoted}
+        hideAnswers={!showResult}
         barNr={barNr}
       >
         {`${value}`}
